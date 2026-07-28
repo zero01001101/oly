@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ô Ly — Học từ vựng tiếng Anh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* ============================================================ tokens == */
+:root{
+  --paper:#EDF3F0;          /* giấy ô ly */
+  --paper-hi:#F7FBF9;
+  --rule:#C3DBD4;           /* nét kẻ ô ly */
+  --ink:#16283B;            /* mực bút bi */
+  --ink-soft:#5A7183;
+  --red:#C4402E;            /* bút đỏ cô giáo */
+  --green:#1B7A5A;
+  --gold:#D9A62E;
+  --shadow:0 1px 0 rgba(22,40,59,.10), 0 10px 30px -18px rgba(22,40,59,.45);
+  --radius:14px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ipa:"Charis SIL","Doulos SIL",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--body);color:var(--ink);background:var(--paper);
+  line-height:1.55;min-height:100vh;
+  background-image:
+    repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(to bottom,var(--rule) 0 1px,transparent 1px 28px);
+  background-position:center top;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ============================================================ shell == */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(237,243,240,.93);backdrop-filter:blur(8px);
+  border-bottom:1.5px solid var(--ink);
+}
+.topbar-in{max-width:940px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;
+  display:flex;align-items:center;gap:9px}
+.brand-mark{width:26px;height:26px;border:2px solid var(--ink);border-radius:5px;
+  background-image:repeating-linear-gradient(to right,var(--ink) 0 1px,transparent 1px 8px),
+                   repeating-linear-gradient(to bottom,var(--ink) 0 1px,transparent 1px 8px);
+  opacity:.85;flex:none}
+.tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.tab{padding:7px 15px;border-radius:9px;font-weight:600;font-size:14.5px;color:var(--ink-soft)}
+.tab:hover{background:rgba(22,40,59,.07);color:var(--ink)}
+.tab.on{background:var(--ink);color:var(--paper-hi)}
+.count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+main{max-width:940px;margin:0 auto;padding:30px 20px 90px}
+.view{display:none}
+.view.on{display:block;animation:rise .3s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--paper-hi);border:1.5px solid var(--ink);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:26px}
+.card + .card{margin-top:18px}
+
+h2{font-family:var(--display);font-size:27px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px}
+.sub{color:var(--ink-soft);font-size:14.5px;margin-bottom:22px}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:9px}
+
+/* ============================================================ buttons == */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 20px;border-radius:10px;font-weight:600;font-size:15px;
+  border:1.5px solid var(--ink);background:var(--paper-hi);
+  transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-1.5px);box-shadow:0 3px 0 var(--ink)}
+.btn:active{transform:none;box-shadow:none}
+.btn.primary{background:var(--ink);color:var(--paper-hi)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.ghost{border-color:transparent;background:rgba(22,40,59,.06)}
+.btn.ghost:hover{box-shadow:none;background:rgba(22,40,59,.12)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ============================================================ home == */
+.hero{text-align:center;padding:14px 0 4px}
+.hero h1{font-family:var(--display);font-size:clamp(34px,6vw,52px);font-weight:700;
+  letter-spacing:-.035em;line-height:1.05;margin-bottom:12px}
+.hero h1 em{font-style:normal;position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:4px;height:11px;
+  background:var(--gold);opacity:.42;z-index:-1;border-radius:2px}
+.hero p{color:var(--ink-soft);max-width:44ch;margin:0 auto 24px}
+
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:20px}
+.pick{background:var(--paper-hi);border:1.5px solid var(--ink);border-radius:var(--radius);
+  padding:20px;text-align:left;box-shadow:var(--shadow);
+  transition:transform .14s,box-shadow .14s}
+.pick:hover{transform:translateY(-3px);box-shadow:0 5px 0 var(--ink),var(--shadow)}
+.pick b{display:block;font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:4px}
+.pick span{font-size:13.5px;color:var(--ink-soft);display:block}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:4px}
+.stat{border:1.5px dashed var(--rule);border-radius:11px;padding:13px 15px;background:var(--paper-hi)}
+.stat b{display:block;font-family:var(--display);font-size:26px;font-weight:700;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:12px;color:var(--ink-soft);font-weight:500}
+
+/* ============================================================ word display == */
+.word-main{font-family:var(--display);font-size:clamp(34px,7vw,54px);font-weight:700;
+  letter-spacing:-.03em;line-height:1.1;word-break:break-word}
+.ipa{font-family:var(--ipa);font-size:20px;color:var(--ink-soft);margin-top:6px}
+.pos{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--red);border:1.5px solid var(--red);
+  border-radius:20px;padding:2.5px 11px;margin-top:11px}
+.meaning-big{font-family:var(--display);font-size:clamp(25px,5vw,38px);font-weight:500;
+  line-height:1.25;letter-spacing:-.015em}
+
+.stage{text-align:center;padding:14px 0 6px;min-height:150px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* ============================================================ choices == */
+.choices{display:grid;gap:10px;margin-top:22px}
+.choice{display:flex;align-items:flex-start;gap:13px;width:100%;text-align:left;
+  padding:14px 17px;border:1.5px solid var(--ink);border-radius:11px;
+  background:var(--paper-hi);font-size:16px;font-weight:500;
+  transition:transform .11s,background .11s}
+.choice:hover:not(:disabled){transform:translateX(3px);background:#fff}
+.choice:disabled{cursor:default}
+.choice .letter{flex:none;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--ink);
+  display:grid;place-items:center;font-size:13px;font-weight:800;margin-top:1px}
+.choice.sel{background:var(--ink);color:var(--paper-hi)}
+.choice.sel .letter{border-color:var(--paper-hi)}
+.choice.right{background:rgba(27,122,90,.13);border-color:var(--green);color:var(--green)}
+.choice.right .letter{border-color:var(--green);background:var(--green);color:#fff}
+.choice.wrong{background:rgba(196,64,46,.11);border-color:var(--red);color:var(--red)}
+.choice.wrong .letter{border-color:var(--red);background:var(--red);color:#fff}
+
+/* ============================================================ inputs == */
+.field{width:100%;padding:14px 17px;border:1.5px solid var(--ink);border-radius:11px;
+  background:var(--paper-hi);font-size:17px;font-weight:500}
+.field:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,166,46,.28)}
+.field.ok{border-color:var(--green);background:rgba(27,122,90,.09)}
+.field.no{border-color:var(--red);background:rgba(196,64,46,.08)}
+
+.verdict{margin-top:16px;padding:14px 17px;border-radius:11px;font-weight:600;font-size:15px;
+  border:1.5px solid;text-align:left}
+.verdict.ok{border-color:var(--green);color:var(--green);background:rgba(27,122,90,.09)}
+.verdict.no{border-color:var(--red);color:var(--red);background:rgba(196,64,46,.08)}
+.verdict small{display:block;font-weight:500;margin-top:5px;color:var(--ink);opacity:.8;font-size:13.5px}
+
+/* ============================================================ progress == */
+.bar{height:7px;border-radius:99px;background:rgba(22,40,59,.13);overflow:hidden;margin:18px 0 4px}
+.bar i{display:block;height:100%;background:var(--ink);border-radius:99px;transition:width .35s ease}
+.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);
+  font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ============================================================ test == */
+.testbar{position:sticky;top:62px;z-index:20;display:flex;align-items:center;gap:14px;
+  background:var(--paper-hi);border:1.5px solid var(--ink);border-radius:var(--radius);
+  padding:12px 18px;box-shadow:var(--shadow);margin-bottom:16px;flex-wrap:wrap}
+.clock{font-family:var(--display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em}
+.clock.low{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.45}}
+.qnav{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto}
+.qdot{width:27px;height:27px;border-radius:7px;border:1.5px solid var(--rule);
+  font-size:12px;font-weight:700;display:grid;place-items:center;color:var(--ink-soft)}
+.qdot.done{background:var(--ink);border-color:var(--ink);color:var(--paper-hi)}
+.qdot.now{border-color:var(--gold);border-width:2.5px;color:var(--ink)}
+
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}
+.qnum{font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink-soft)}
+.qtype{font-size:11.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--gold)}
+.qtext{font-family:var(--display);font-size:clamp(21px,4vw,29px);font-weight:500;
+  line-height:1.3;letter-spacing:-.015em}
+
+/* --- the marked paper: signature moment --- */
+.score-hero{text-align:center;padding:12px 0 20px}
+.score-hero .big{font-family:var(--display);font-size:76px;font-weight:700;line-height:1;
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.score-hero .of{color:var(--ink-soft);font-size:19px;font-weight:600}
+.score-hero .verdict-line{font-size:15px;color:var(--ink-soft);margin-top:8px}
+
+.mark{border:1.5px solid var(--ink);border-radius:var(--radius);padding:19px;
+  background:var(--paper-hi);margin-top:13px;position:relative;overflow:hidden}
+.mark::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--red)}
+.mark.ok::before{background:var(--green)}
+.mark .q{font-weight:600;font-size:16px;margin-bottom:12px;padding-left:9px}
+.mark .line{display:flex;gap:10px;align-items:baseline;padding-left:9px;font-size:15px;margin-top:5px}
+.mark .lbl{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-soft);flex:none;width:74px}
+.struck{color:var(--red);text-decoration:line-through;text-decoration-thickness:2px;font-weight:600}
+.penned{color:var(--green);font-weight:700}
+.solution{margin-top:13px;margin-left:9px;padding:13px 15px;border-radius:10px;
+  background:rgba(217,166,46,.14);border:1.5px dashed var(--gold);font-size:14.5px}
+.solution .w{font-family:var(--display);font-size:19px;font-weight:700}
+.solution .p{font-family:var(--ipa);color:var(--ink-soft);margin-left:7px}
+
+/* ============================================================ flashcard == */
+.flip{perspective:1400px;margin:8px 0 4px}
+.flip-in{position:relative;width:100%;min-height:230px;transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,.2,.2,1)}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1.5px solid var(--ink);border-radius:var(--radius);background:var(--paper-hi);
+  box-shadow:var(--shadow);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:26px;text-align:center}
+.face.back{transform:rotateY(180deg);background:var(--ink);color:var(--paper-hi)}
+.face.back .meaning-big{color:var(--paper-hi)}
+.face.back .ipa{color:rgba(247,251,249,.66)}
+.hint{font-size:12.5px;color:var(--ink-soft);margin-top:16px;font-weight:500}
+.face.back .hint{color:rgba(247,251,249,.6)}
+
+/* ============================================================ bank == */
+.dropzone{border:2.5px dashed var(--rule);border-radius:var(--radius);padding:34px 22px;
+  text-align:center;background:var(--paper-hi);transition:border-color .18s,background .18s}
+.dropzone.hot{border-color:var(--gold);background:rgba(217,166,46,.11)}
+.dropzone h3{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:5px}
+.dropzone p{color:var(--ink-soft);font-size:14px;margin-bottom:16px}
+
+.schema{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:18px;font-size:11.5px}
+.schema div{border:1.5px solid var(--rule);border-radius:7px;padding:8px 6px;text-align:center;
+  background:var(--paper-hi)}
+.schema b{display:block;font-size:15px;font-family:var(--display);color:var(--ink-soft)}
+
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+th{text-align:left;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);padding:9px 10px;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:hover td{background:rgba(217,166,46,.09)}
+.tw{font-weight:700;font-size:15.5px}
+.tp{font-family:var(--ipa);color:var(--ink-soft);font-size:13.5px}
+.thin{color:var(--red);font-size:12.5px;font-weight:600;font-style:italic;opacity:.8}
+.lvl{display:inline-flex;gap:2.5px}
+.lvl i{width:6px;height:6px;border-radius:99px;background:rgba(22,40,59,.17)}
+.lvl i.f{background:var(--green)}
+.scroll{max-height:440px;overflow:auto;margin:0 -6px;padding:0 6px}
+
+.empty{text-align:center;padding:44px 20px;color:var(--ink-soft)}
+.empty b{display:block;font-family:var(--display);font-size:21px;color:var(--ink);margin-bottom:6px}
+
+.note{font-size:13px;color:var(--ink-soft);margin-top:12px;padding-left:13px;
+  border-left:2.5px solid var(--rule)}
+.warn{background:rgba(217,166,46,.17);border:1.5px solid var(--gold);border-radius:10px;
+  padding:11px 15px;font-size:13.5px;margin-bottom:16px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120%);
+  background:var(--ink);color:var(--paper-hi);padding:13px 24px;border-radius:11px;
+  font-weight:600;font-size:14.5px;z-index:200;transition:transform .32s cubic-bezier(.2,1.3,.4,1);
+  box-shadow:0 12px 34px -10px rgba(22,40,59,.6);max-width:88vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+.modes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.mode{padding:8px 15px;border-radius:9px;border:1.5px solid var(--rule);
+  font-size:14px;font-weight:600;color:var(--ink-soft)}
+.mode:hover{border-color:var(--ink);color:var(--ink)}
+.mode.on{background:var(--ink);border-color:var(--ink);color:var(--paper-hi)}
+
+.mic{width:88px;height:88px;border-radius:99px;border:2.5px solid var(--ink);
+  background:var(--paper-hi);display:grid;place-items:center;font-size:34px;margin:6px auto 0;
+  transition:transform .15s}
+.mic:hover{transform:scale(1.06)}
+.mic.rec{background:var(--red);border-color:var(--red);color:#fff;animation:rec 1.1s infinite}
+@keyframes rec{50%{box-shadow:0 0 0 15px rgba(196,64,46,.16)}}
+
+/* ============================================================ levels == */
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:12px;margin-bottom:26px}
+.lvl-card{display:flex;align-items:center;gap:15px;text-align:left;padding:15px 17px;
+  border:1.5px solid var(--ink);border-radius:var(--radius);background:var(--paper-hi);
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+  animation:lvl-in .52s cubic-bezier(.22,.9,.28,1.05) both;
+  animation-delay:calc(var(--i) * 65ms);
+  transition:transform .2s cubic-bezier(.2,.9,.3,1.1),box-shadow .2s,border-color .2s}
+@keyframes lvl-in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+/* tint wash sweeps in from the left on hover */
+.lvl-card::before{content:"";position:absolute;inset:0;background:var(--tint);opacity:0;
+  transform:translateX(-100%);transition:transform .42s cubic-bezier(.3,.9,.3,1),opacity .3s}
+.lvl-card:hover::before{transform:none;opacity:.13}
+.lvl-card:hover{transform:translateY(-4px);box-shadow:0 6px 0 var(--ink),var(--shadow);
+  border-color:var(--tint)}
+.lvl-card:active{transform:translateY(-1px);box-shadow:0 2px 0 var(--ink)}
+.lvl-card > *{position:relative;z-index:1}
+.lvl-card.none{opacity:.45}
+.lvl-card.on{background:var(--ink);border-color:var(--ink)}
+.lvl-card.on::before{opacity:.26;transform:none}
+.lvl-card.on .lvl-meta b,.lvl-card.on .code{color:var(--paper-hi)}
+.lvl-card.on .n,.lvl-card.on .ielts{color:rgba(247,251,249,.72)}
+.lvl-card.on .ring-bg{stroke:rgba(247,251,249,.25)}
+
+.ring{position:relative;width:56px;height:56px;flex:none;display:grid;place-items:center}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(22,40,59,.14);stroke-width:5}
+.ring-fg{fill:none;stroke:var(--tint);stroke-width:5;stroke-linecap:round;
+  transition:stroke-dashoffset 1.05s cubic-bezier(.25,.9,.3,1) var(--delay,0ms)}
+.code{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.02em}
+.lvl-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+.lvl-meta b{font-size:15px;font-weight:700;line-height:1.25}
+.lvl-meta .n{font-size:12.5px;color:var(--ink-soft);font-weight:600;font-variant-numeric:tabular-nums}
+.lvl-meta .ielts{font-size:11px;color:var(--ink-soft);font-weight:500;letter-spacing:.03em}
+
+.chip{display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;
+  border:1.5px solid var(--ink);border-radius:99px;padding:6px 8px 6px 14px;
+  background:var(--paper-hi);margin-bottom:16px;
+  animation:chip-in .34s cubic-bezier(.2,.9,.3,1.1) both}
+@keyframes chip-in{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+.chip .dot{width:9px;height:9px;border-radius:99px;flex:none}
+.chip-x{border:none;background:rgba(22,40,59,.09);border-radius:99px;padding:3px 11px;
+  font-size:12px;font-weight:700;color:var(--ink-soft);transition:background .16s,color .16s}
+.chip-x:hover{background:var(--red);color:#fff}
+
+.cefr-pick{border:1.5px solid var(--tint);border-radius:7px;padding:2px 5px;font-size:12px;
+  font-weight:800;color:var(--tint);background:var(--paper-hi);cursor:pointer;
+  transition:background .16s,color .16s}
+.cefr-pick:hover{background:var(--tint);color:#fff}
+.schema .opt{border-style:dashed;opacity:.72}
+
+/* stat tiles and answer choices stagger in with their container */
+.stat{animation:lvl-in .45s ease both;animation-delay:calc(var(--i,0) * 55ms + 90ms)}
+.choices .choice{animation:lvl-in .38s ease both}
+.choices .choice:nth-child(1){animation-delay:40ms}
+.choices .choice:nth-child(2){animation-delay:95ms}
+.choices .choice:nth-child(3){animation-delay:150ms}
+.choices .choice:nth-child(4){animation-delay:205ms}
+.mark{animation:lvl-in .4s ease both}
+.verdict{animation:chip-in .3s ease both}
+
+/* ============================================================ rescan == */
+.scan{border:1.5px solid var(--ink);border-radius:var(--radius);padding:16px 18px;
+  margin-bottom:16px;background:var(--paper-hi);position:relative;overflow:hidden;
+  animation:chip-in .34s cubic-bezier(.2,.9,.3,1.1) both}
+.scan::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--green)}
+.scan.warn-scan::before{background:var(--gold)}
+.scan-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;padding-left:9px}
+.scan-head b{font-family:var(--display);font-size:18px;font-weight:700}
+.scan-n{font-size:12.5px;color:var(--ink-soft);font-weight:600;font-variant-numeric:tabular-nums}
+.scan p{font-size:14px;color:var(--ink-soft);padding-left:9px;line-height:1.5}
+.scan .btn-row{padding-left:9px}
+
+.dupes{margin:12px 0 0 9px;display:flex;flex-direction:column;gap:5px;
+  max-height:210px;overflow:auto}
+.dupe{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;font-size:13.5px;
+  padding:7px 11px;border:1.5px dashed var(--rule);border-radius:9px;background:var(--paper)}
+.dupe b{font-size:15px}
+.dupe-n{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--red);border:1.5px solid var(--red);border-radius:20px;padding:1px 8px}
+.dupe-v{font-family:var(--ipa);font-size:12px;color:var(--ink-soft);word-break:break-all}
+.dupe.more{border-style:solid;border-color:transparent;color:var(--ink-soft);font-style:italic}
+
+.flagged{margin:13px 0 0 9px;display:flex;flex-direction:column;gap:5px;
+  max-height:230px;overflow:auto}
+.flagged-head{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:3px}
+.flag{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:13.5px;
+  padding:7px 11px;border:1.5px dashed var(--rule);border-radius:9px;background:var(--paper)}
+.flag b{font-size:15px;min-width:78px}
+.flag-ipa{font-family:var(--ipa);color:var(--ink-soft);font-size:13px}
+.flag-why{font-size:12px;color:var(--red);font-weight:600}
+.flag.more{border-style:solid;border-color:transparent;color:var(--ink-soft);font-style:italic}
+
+.badge{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 5px;
+  border-radius:99px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;
+  vertical-align:middle;animation:badge-pop .4s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes badge-pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.tab.on .badge{background:var(--paper-hi);color:var(--ink)}
+
+/* ======================================================= test scope == */
+.scope{display:flex;flex-wrap:wrap;gap:7px}
+.scope-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:10px;
+  border:1.5px solid var(--ink);background:var(--paper-hi);font-size:14.5px;font-weight:700;
+  position:relative;overflow:hidden;
+  animation:lvl-in .4s cubic-bezier(.22,.9,.28,1.05) both;
+  transition:transform .16s cubic-bezier(.2,.9,.3,1.1),box-shadow .16s,border-color .16s}
+.scope-btn::before{content:"";position:absolute;inset:0;background:var(--tint,var(--ink));opacity:0;
+  transform:translateX(-100%);transition:transform .35s cubic-bezier(.3,.9,.3,1),opacity .25s}
+.scope-btn:hover::before{transform:none;opacity:.14}
+.scope-btn:hover{transform:translateY(-2.5px);box-shadow:0 4px 0 var(--ink);
+  border-color:var(--tint,var(--ink))}
+.scope-btn:active{transform:none;box-shadow:none}
+.scope-btn > *{position:relative;z-index:1}
+.scope-btn.on{background:var(--ink);color:var(--paper-hi);border-color:var(--ink)}
+.scope-btn.on::before{opacity:.3;transform:none}
+.scope-btn.empty{opacity:.42}
+.scope-btn.mix{border-style:dashed}
+.sc-n{position:relative;z-index:1;font-size:11px;font-weight:800;padding:1px 7px;border-radius:99px;
+  background:rgba(22,40,59,.12);font-variant-numeric:tabular-nums}
+.scope-btn.on .sc-n{background:rgba(247,251,249,.26)}
+
+.mixer{margin-top:14px;border:1.5px dashed var(--gold);border-radius:var(--radius);
+  padding:14px;background:rgba(217,166,46,.09);
+  animation:mix-in .34s cubic-bezier(.2,.9,.3,1.05) both}
+@keyframes mix-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mix-head{font-size:11.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:10px}
+.mix-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:7px}
+.mix-btn{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:9px 12px;
+  border:1.5px solid var(--ink);border-radius:10px;background:var(--paper-hi);
+  position:relative;transition:transform .15s,box-shadow .15s,background .15s}
+.mix-btn:hover{transform:translateY(-2px);box-shadow:0 3px 0 var(--ink)}
+.mix-btn.on{background:var(--tint);border-color:var(--tint);color:#fff}
+.mix-btn.empty{opacity:.45}
+.mix-btn b{font-family:var(--display);font-size:16px;font-weight:700}
+.mx-n{font-size:11px;font-weight:600;opacity:.72;font-variant-numeric:tabular-nums}
+.tick{position:absolute;top:6px;right:8px;font-size:12px;font-weight:900;line-height:1}
+.mix-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:11px;font-size:13px;color:var(--ink-soft)}
+.mix-quick{display:flex;gap:4px;flex-wrap:wrap}
+.lnk{font-size:12px;font-weight:700;color:var(--ink-soft);border:1.5px solid var(--rule);
+  border-radius:99px;padding:2px 10px;background:var(--paper-hi);transition:all .16s}
+.lnk:hover{border-color:var(--ink);color:var(--ink)}
+.bar-scope{display:inline-block;margin-left:8px;font-size:11px;font-weight:800;
+  letter-spacing:.05em;color:var(--gold);border:1.5px solid var(--gold);
+  border-radius:99px;padding:1px 8px}
+
+@media(max-width:640px){
+  .scope{gap:5px}
+  .scope-btn{padding:7px 11px;font-size:13.5px}
+  .mix-grid{grid-template-columns:repeat(3,1fr)}
+  .mix-foot{flex-direction:column;align-items:flex-start}
+  .bar-scope{display:none}
+}
+
+@media(max-width:640px){
+  .levels{grid-template-columns:repeat(2,1fr);gap:9px}
+  .lvl-card{flex-direction:column;align-items:flex-start;gap:10px;padding:13px}
+  .lvl-meta .ielts{font-size:10.5px}
+}
+
+@media(max-width:640px){
+  main{padding:20px 14px 70px}
+  .card{padding:19px}
+  .topbar-in{padding:10px 14px;gap:10px}
+  .brand{font-size:19px}
+  .tab{padding:6px 11px;font-size:13.5px}
+  .count{width:100%;order:3}
+  .schema{grid-template-columns:repeat(2,1fr)}
+  .testbar{top:56px}
+  .score-hero .big{font-size:60px}
+  .mark .line{flex-direction:column;gap:1px}
+  .mark .lbl{width:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="brand-mark"></span>Ô Ly</div>
+    <nav class="tabs">
+      <button class="tab on" data-go="home">Trang chủ</button>
+      <button class="tab" data-go="learn">Học</button>
+      <button class="tab" data-go="test">Kiểm tra</button>
+      <button class="tab" data-go="review">Ôn tập</button>
+      <button class="tab" data-go="bank">Kho từ</button>
+    </nav>
+    <div class="count" id="count">0 từ</div>
+  </div>
+</header>
+
+<main>
+  <!-- ===================================================== HOME ===== -->
+  <section class="view on" id="v-home">
+    <div class="hero">
+      <h1>Học từ vựng<br>bằng <em>bốn kỹ năng</em></h1>
+      <p>Nghe, nói, đọc, viết — rồi kiểm tra 20 câu trong 20 phút. Kho từ của bạn nạp thẳng từ file Excel.</p>
+    </div>
+
+    <div class="eyebrow" style="margin-top:30px">Chọn trình độ · thang CEFR</div>
+    <div class="levels" id="levels"></div>
+
+    <div class="grid3">
+      <button class="pick" data-go="learn"><b>Học</b><span>Bốn chế độ: nghe · nói · đọc · viết</span></button>
+      <button class="pick" data-go="test"><b>Kiểm tra</b><span>20 câu trắc nghiệm · 20 phút · chấm ngay</span></button>
+      <button class="pick" data-go="review"><b>Ôn tập</b><span>Thẻ lật, ưu tiên từ bạn hay quên</span></button>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="eyebrow">Tiến độ của bạn</div>
+      <div class="stats" id="home-stats"></div>
+      <p class="note" id="home-note"></p>
+    </div>
+  </section>
+
+  <!-- ===================================================== LEARN ===== -->
+  <section class="view" id="v-learn">
+    <h2>Học</h2>
+    <p class="sub">Chọn một kỹ năng. Mỗi vòng 10 từ, chọn ưu tiên những từ bạn còn yếu.</p>
+    <div class="modes" id="learn-modes">
+      <button class="mode on" data-mode="listen">Nghe</button>
+      <button class="mode" data-mode="speak">Nói</button>
+      <button class="mode" data-mode="read">Đọc</button>
+      <button class="mode" data-mode="write">Viết</button>
+    </div>
+    <div id="chip-learn"></div>
+    <div class="card" id="learn-card"></div>
+  </section>
+
+  <!-- ===================================================== TEST ===== -->
+  <section class="view" id="v-test">
+    <div id="test-host"></div>
+  </section>
+
+  <!-- ===================================================== REVIEW ===== -->
+  <section class="view" id="v-review">
+    <h2>Ôn tập</h2>
+    <p class="sub">Thẻ lật. Từ nào bạn hay sai sẽ xuất hiện trước.</p>
+    <div id="chip-review"></div>
+    <div id="review-host"></div>
+  </section>
+
+  <!-- ===================================================== BANK ===== -->
+  <section class="view" id="v-bank">
+    <h2>Kho từ</h2>
+    <p class="sub">Nạp thêm từ bằng file Excel. File mới sẽ cộng dồn vào kho, không ghi đè.</p>
+
+    <div class="card">
+      <div class="dropzone" id="drop">
+        <h3>Kéo file Excel vào đây</h3>
+        <p>.xlsx · .xls · .csv — hoặc bấm nút để chọn file</p>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn primary" id="pick-file">Chọn file Excel</button>
+          <button class="btn" id="dl-sample">Tải file mẫu</button>
+        </div>
+        <input type="file" id="file" accept=".xlsx,.xls,.csv" multiple hidden>
+        <div class="schema">
+          <div><b>1</b>STT</div><div><b>2</b>Từ</div><div><b>3</b>Loại từ</div>
+          <div><b>4</b>Phiên âm</div><div><b>5</b>Nghĩa</div>
+          <div class="opt"><b>6</b>CEFR (tuỳ chọn)</div>
+        </div>
+      </div>
+      <p class="note">Đọc đúng thứ tự 5 cột như trên và đọc mọi sheet trong file. Dòng tiêu đề tự được bỏ qua.
+        Dòng thiếu từ hoặc thiếu nghĩa sẽ bị bỏ. Từ đã có trong kho sẽ được cập nhật chứ không nhân đôi.
+        Chọn nhiều file cùng lúc cũng được. Cột 6 ghi trình độ (A1–C2) là tuỳ chọn —
+        bỏ trống thì chương trình tự xếp loại.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+        <input class="field" id="search" placeholder="Tìm từ hoặc nghĩa…" style="flex:1;min-width:190px">
+        <button class="btn" id="rescan">Quét lại kho từ</button>
+        <button class="btn ghost" id="wipe">Xoá kho từ</button>
+      </div>
+      <div id="scan-report"></div>
+      <div class="scroll"><div id="bank-host"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ================================================================ storage ==
+   localStorage is blocked in some preview sandboxes. Fall back to memory so
+   the app still runs; the banner tells the user progress will not persist. */
+const store = (() => {
+  let mem = Object.create(null), live = true;
+  try { localStorage.setItem("__t", "1"); localStorage.removeItem("__t"); }
+  catch (e) { live = false; }
+  return {
+    live,
+    get(k, d) {
+      try { const v = live ? localStorage.getItem(k) : mem[k];
+            return v == null ? d : JSON.parse(v); } catch (e) { return d; }
+    },
+    set(k, v) {
+      const s = JSON.stringify(v);
+      if (live) { try { localStorage.setItem(k, s); return; } catch (e) { live = false; } }
+      mem[k] = s;
+    }
+  };
+})();
+
+/* ================================================================ utils ==
+   These must be declared BEFORE the data block below: seeding the bank calls
+   save() -> paintCount() -> $(), and a `const` is not hoisted. Declaring them
+   later puts $ in the temporal dead zone and throws on first load. */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s == null ? "" : s)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const shuffle = a => { a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;
+    [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const norm = s => String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+
+let toastT;
+function toast(msg) {
+  const t = $("#toast"); if (!t) return;
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600);
+}
+
+/* ================================================================ CEFR ==
+   Levels are CEFR (A1-C2). Classification is two-stage:
+   1. a built-in lexicon — this exists because pure heuristics get two things
+      badly wrong: long-but-basic words (grandmother, understand, interesting)
+      and short-but-advanced ones (bleak, wary, curb, deft).
+   2. a morphological fallback for anything not listed, scoring syllables,
+      length and academic affixes.
+   A 6th column in the Excel file overrides both. */
+const LEVELS = ["A1","A2","B1","B2","C1","C2"];
+const LEVEL_INFO = {
+  A1:{ name:"Mới bắt đầu",  ielts:"dưới 3.0", tint:"#7FB8A4" },
+  A2:{ name:"Sơ cấp",       ielts:"3.0 – 4.0", tint:"#6BA8B8" },
+  B1:{ name:"Trung cấp",    ielts:"4.0 – 5.0", tint:"#5B8FC0" },
+  B2:{ name:"Trung cao",    ielts:"5.5 – 6.5", tint:"#5A72B5" },
+  C1:{ name:"Cao cấp",      ielts:"7.0 – 8.0", tint:"#7A5FA8" },
+  C2:{ name:"Thành thạo",   ielts:"8.5 – 9.0", tint:"#96468C" }
+};
+
+const LEX = {
+A1:`a about after afternoon again age air all also always and angry animal answer any apple arm art ask at aunt baby back bad bag ball banana bank bath bathroom be beach beautiful because bed bedroom before begin behind between big bike bird birthday black blue boat body book boot bored boring born both bottle box boy bread breakfast bring brother brown bus business busy but butter buy by cake call camera can car card carrot cat chair cheap cheese chicken child children chocolate church cinema city class clean clock close clothes cloud club coat coffee cold college colour come computer cook cool country cousin cow cup dance dangerous dark daughter day dear desk dictionary different difficult dinner dirty do doctor dog door down draw dress drink drive driver dry ear early east easy eat egg eight elephant eleven email end english enjoy enough evening every exercise expensive eye face family famous fast fat father favourite feel few film find fine finger finish fire first fish five flower fly food foot football for forty four free friend from fruit full fun game garden get girl give glass go good grandfather grandmother great green grey guitar hair half hand happy hard hat have he head hear heavy hello help her here high his history hobby holiday home homework horse hospital hot hotel hour house how hundred hungry husband ice idea if important in interesting internet into it jacket job juice jump keep key kitchen know lamp language large last late learn leave left leg lesson letter library life light like listen little live long look lose lot love lunch machine make man many map market meat meet milk minute miss money month moon morning mother mountain mouth much museum music must my name near need never new news newspaper next nice night nine no noise north nose not now number nurse office often oil old on one open or orange other out outside over page paper parent park party pen pencil people person pet phone photo piano picture pig pink place plane plant play please police poor postcard potato practise present pretty price problem put question quick quiet radio rain read ready red restaurant rice rich right river road room run sad salad salt same sandwich say school sea season second see sell send seven she sheep shirt shoe shop short show shower sing sister sit six sky sleep slow small snow so sock some son song sorry soup south speak sport spring stand star start station stay stop story street strong student study sugar summer sun supermarket sweet swim table take talk tall taxi tea teacher team telephone television tell ten tennis test thank the their them then there thing think thirsty thirty this three ticket time tired today together tomato tomorrow tonight too tooth town train travel tree trousers true try turn twelve twenty two ugly umbrella uncle under understand university until up us use usually vegetable very video village visit wait walk wall want warm wash watch water we wear weather week weekend welcome well west wet what when where which white who why wife win wind window winter with woman word work world write wrong year yellow yes yesterday you young zoo`,
+A2:`above accident across activity actor add address adult advice afraid ago agree airport allow alone along already although among amount another anybody anything anywhere apartment appear area army around arrive artist asleep attack attractive autumn available average away awful badly band battery bear beat become beginning believe bell belong below belt bench best better bicycle bill biscuit bit bite blanket blood blow board boil borrow bottom bowl brain branch brave break breathe bridge bright broken brush build building burn button cafe camp cancel candle capital care careful carefully carry cash castle catch cause ceiling celebrate cent centre century certain chance change character check chess choose circle clear clever climb cloth cloudy coach coast coin collect comfortable common company compare competition complete concert condition confident connect contact continue control conversation copy corner correct cost cotton cough count couple course cover crash cream create credit cross crowd cry cupboard curtain customer cut cycle daily damage danger date dead deaf deal decide decision deep degree delay delicious deliver dentist depend describe desert design dessert destroy detail develop diary die difference direct direction director disappear discover discuss disease dish distance divide document dollar double doubt download downstairs dream drop drug during duty each earn earth easily education effect either electric electricity else emergency employ empty enemy energy engine engineer enter entrance envelope environment equal equipment escape especially event ever everybody everyone everything everywhere exactly exam example excellent except excited exciting excuse exhibition exit expect experience experiment expert explain express extra fact fail fair fall false farm fashion fear feed feeling female fever fight fill final finally fit fix flat flight floor fold follow foreign forest forget forgive fork form freeze fresh fridge friendly frighten front frozen fry future gate gift glad goal gold golf grade grass ground group grow guess guest guide gun hall hang happen hate health healthy heart heat hide hill hire hit hold hole honest hope horrible however huge hurry hurt ill imagine improve include increase industry information injure insect inside instead instruction interest interview introduce invent invitation invite island jeans jewellery join joke journalist journey judge keyboard kill kind king kiss knee knife knock ladder lake land laugh lawyer lazy lead leaf lean leather lend level lie lift limit line lion list local lock lonely loud low luck luggage lung mail main manage manager mark marry match material maybe meal mean measure medicine meeting member memory mend menu message metal method middle mind mirror mistake mix mobile model modern moment monkey mood mouse move movie mud murder narrow national nature nearly necessary neck neighbour neither nervous net nobody noisy none normal note nothing notice novel nowhere object ocean offer once online only opinion opposite order ordinary organise original outdoor own owner pack pain paint painting pair palace parcel pardon parking partner pass passenger passport past path patient pattern pay peace pepper perfect perform perhaps period permission personal petrol pick picnic piece pilot pin pipe pity plan plastic plate platform pleasant pleased plenty pocket poem point poison polite pollution pool popular port position possible post pot pound pour power practical prefer prepare press pretend prevent print prison private prize probably produce product programme progress project promise pronounce protect proud prove provide public pull punish pupil purpose push quarter queen race raise rare rate rather reach real realise reason receipt receive recent recipe recognise recommend record reduce refuse region regular relax remain remember remind remove rent repair repeat reply report request rescue research respect responsible rest result return reward ride ring rise risk rock roll roof root rope round rubber rubbish rule safe safety sail salary sale sand save scared scarf scene science scissors score scream screen search seat secret secretary section seem sense sentence separate serious serve service several shade shake shape share sharp shelf shine ship shock shoot shopping shout shut side sight sign signal silence silly silver similar simple since sink site situation size skill skin skirt slice slide slip smell smile smoke smooth snake soap society soft soil soldier solve someone something sometimes somewhere sound space spare speed spell spend spider spoon spot spread square staff stage stair stamp standard state steal steel step stick still stomach stone storm straight strange stranger stress stretch strict string style subject succeed success such sudden suffer suggest suit suitable suitcase sunny support suppose sure surface surprise swap sweater sweep swing switch symbol system`,
+B1:`abroad absolutely accept access accommodation according account achieve active actually adapt admire admit advance advantage adventure advertise affect afford agency agent aim alarm alive ambition amuse ancient announce annoy anxious apologise apparently appeal appearance apply appointment appreciate approach appropriate approve argue argument arrange arrest article artificial ashamed aspect assist assume attach attempt attend attention attitude attract audience author authority avoid award aware background balance ban bargain barrier basic basis battle beg behave behaviour belief benefit besides beyond bid blame blind block bond border bother bound breath brief broad budget burst calculate calm campaign capable capacity career category ceremony certificate challenge championship charge charity chase chat cheat cheer chemical circumstance citizen claim classic client climate closely clue collapse colleague combine comment commercial commit committee communicate community compete complain complex concentrate concept concern conclude conclusion conduct confirm conflict confuse connection conscious consequence consider consist constant construct consult consume contain contemporary content context contract contrast contribute convenient convince cope core corporate council courage creative crime criminal crisis critical criticise cruel cultural culture cure curious currency current curve custom debate decade decline decorate decrease defeat defend define delight demand democracy demonstrate deny depart deposit describe deserve desire despite detect determine device devote diet differ digital dimension disagree disappoint disaster discipline discount discourage display dispute distinguish distribute disturb dive domestic dominate donate drag drama dramatic due dull dump eager economic economy edge edit effective efficient effort elect element eliminate elsewhere embarrass emerge emotion emphasis enable encounter encourage enormous ensure entertain enthusiasm entire equipment era essay essential establish estate estimate evaluate eventually evidence evil evolve exceed exchange exclude exist expand expense explode explore export expose extend extent external extreme familiar generate impress independent influence intelligent involve maintain obvious occasion participate particular passion permanent politics practice previous process propose purchase quality quantity reaction recover reflect regard relate relationship release relevant reliable relief religion remark remote repeatable replace represent require reserve resist resource respond responsibility restrict retire reveal review revise revolution rhythm rival routine satisfy scale scheme secure select senior sequence series settle severe shift shortage significant similar sincere slight sole solid source specific spirit stable statement statistic status steady strategy strength stress structure struggle style substance sufficient suggestion summary superior supply survey survive suspect sustain switch talent target technical technique temporary tend tension term theory threat tight tiny tolerate topic tough trace tradition traffic transfer transform transport treat trend trial trust typical union unique unite universal urban urgent valuable value variety various version victim view violent virtual vision volume voluntary warn wealth weigh whereas whether widespread willing wisdom witness worth yield`,
+B2:`abandon absolute abstract absurd abundant accompany accomplish accord accumulate accurate accuse acknowledge acquire adequate adjust administration adopt advocate afterwards aggressive agriculture alter alternative ambiguous ample analyse analysis annual anticipate apparent appliance apt arbitrary arise assemble assert assess asset assign assure attain attribute authentic autonomy await awkward barely bias bitter blend bleak bloom blunt boast bold boost bound brutal bulk burden capture cast casual cautious cease chronic circulate cite civil clarify clarity coherent coincide commence commodity compel compensate competent compile complement comply component compose comprehensive comprise conceal concede conceive condemn confer confess confine confront consecutive consent conserve considerable consistent conspicuous constitute constrain contempt contend contradict controversy convert convey convict coordinate correlate corrupt counsel crucial crude cultivate cumulative curb dedicate deem defer deficit deliberate denote dense depict deprive derive descend designate deteriorate detrimental deviate devise diminish discard discern disclose discrete dismiss disperse displace dispose distinct distort diverse divert doctrine domain drastic dubious durable dwell earnest elaborate emit empirical enact endeavour endorse endure enforce enhance entail equate erode erratic essence evade evoke exempt exert exhaust exhibit expel explicit exploit extract fatal feasible fierce flaw fluctuate forge formulate foster fragile framework fraud frustrate fulfil fundamental furthermore genuine grasp grave grief hamper harsh hence hierarchy hinder hostile hypothesis identical ideology illustrate imitate immense impact impaired impartial impede imperative implement implicit imply impose incentive incline incorporate indicate induce inevitable infer inflict infrastructure inherent inhibit initiate innovate insight instance integral integrate intense interpret interval intervene intricate intrinsic invoke isolate keen legislation legitimate leverage liable literal magnitude mandatory manipulate margin mediate merge merit meticulous mitigate modify momentum monitor mutual negligible negotiate norm notion notwithstanding nurture obscure obsolete offset ongoing optimal outcome outweigh overlap overt paradigm paradox parallel parameter partial passive peculiar perceive persist perspective pertinent phase phenomenon plausible plight pose precede precise predominant preliminary premise prescribe presume prevail prior probe profound prohibit prolong prominent prompt proportion prospect provision provoke prudent pursue rational realm reap reciprocal reconcile rectify redundant refine refrain refute reinforce reluctant render replicate reside residual resilient resolve restrain retain retrieve rigid rigorous robust rudimentary sanction scarce scope scrutiny seldom sever simulate simultaneous sceptical solely sparse specify speculate spontaneous stagnant stark static stem stipulate strive subordinate subsequent subsidy substantial subtle suffice supplement suppress surge surpass susceptible sustainable swift tackle tangible tedious temper tentative terminate theoretical thereby thorough threshold thrive tolerance transient transition transmit trigger trivial ultimate unanimous underlying undergo undermine underpin uniform unprecedented utilise utter vague valid vanish vary vast venture verify versatile viable vicinity vigorous vital vivid void vulnerable warrant whereby withstand zeal`,
+C1:`abide abrupt acclaim acute adamant adhere adjacent adverse aesthetic affinity aggregate akin alleviate allocate allude aloof ambivalent amend amiable analogy anomaly apathy appease apprehend arduous articulate ascend ascertain aspire assimilate astute attest augment auspicious austere avert benevolent bewilder blatant bolster brevity buoyant candid cascade caustic censure charisma chastise coerce cognitive commemorate compelling complacent concise concur condone confound congenial conjecture connotation consensus contemplate contingent converge corroborate covert credible cryptic culminate cursory curtail daunting dearth decipher decorum deference defiant deft delineate demeanour deplete derogatory desolate destitute deter detract devout diffident digress diligent discreet disdain disparate disparity dispel disseminate dissent divergent docile dormant eccentric eclectic elicit elusive eminent emulate enigma ephemeral equivocal erudite esteem euphoria evocative exacerbate exalt exemplary exhaustive exorbitant expedite exquisite extol extraneous facet fallacy fervent finite flagrant flourish forfeit formidable frugal futile garner grandiose gregarious haughty heed hiatus homogeneous idiosyncratic impeccable impetus implausible impunity inadvertent incessant incisive incongruous indigenous indignant indolent inept infallible ingenious innate innocuous inordinate insatiable inscrutable insidious insolent intangible intelligible interim inundate invariably irrevocable jeopardy judicious juxtapose laconic lament languish latent laudable lavish lax lenient lethargic lucid ludicrous magnanimous malign malleable meander mediocre mercurial mundane myriad nebulous negligent nominal nostalgia noxious nuance obliterate oblivious obstinate onerous opaque opulent ostensible ostracise painstaking palpable paltry paramount parochial partisan paucity penchant pensive perfunctory peripheral pernicious perpetual perplex pervasive pinnacle placate plethora poignant pragmatic precarious precedent preclude predicament preposterous pretext prevalent pristine prodigious proliferate propagate prosaic prowess punitive quandary quell rancour rapport ratify raucous recluse refute relegate relinquish remedial reminiscent renounce repudiate reprieve rescind resolute resonate respite reticent reverence rhetoric rife ruminate salient sardonic scrupulous scrutinise secular sedentary serene servile solace solicit spurious squander staunch stoic strident stringent sublime subsidiary substantiate succinct sullen superfluous supplant surrogate tacit taciturn tangential tenacious tenuous terse tractable transcend transgress trepidation turbulent ubiquitous umbrage uncanny unequivocal unilateral untenable usurp vacillate vehement venerate veracity verbose vestige vex vicarious vindicate virtuoso vociferous volatile voracious wane wary whimsical wistful zealous`,
+C2:`abase abhor abstruse acerbic acquiesce acrimony alacrity anathema anodyne aplomb apocryphal apotheosis arcane archetype ascetic asperity assiduous austerity avarice banal beguile belie bellicose bombastic bucolic byzantine cacophony callous camaraderie capricious castigate cavalier chicanery churlish circumlocution circumspect clandestine cogent commensurate compendium conflate connive contrite conundrum copious craven debacle decadent deleterious demagogue denigrate desiccate desultory diaphanous dilatory dilettante disabuse disingenuous dissemble dissonance ebullient effusive egalitarian elegy enervate ennui epistolary equanimity erstwhile eschew esoteric evanescent excoriate exculpate execrable exigent expiate extant extemporaneous extirpate fastidious fatuous fecund felicitous fetter fissure flippant florid foment forbearance fractious fulminate garrulous gainsay grandiloquent guile halcyon harangue hedonist heterodox hubris iconoclast idyllic ignominious imbroglio immutable impecunious imperturbable impervious implacable importune impute inchoate incontrovertible inculcate indefatigable ineluctable inimical iniquity insouciant intractable inveterate irascible jejune jocular jubilant lachrymose lambaste largesse licentious limpid litany loquacious lugubrious machination maelstrom magnate maladroit malfeasance maudlin maverick mawkish mellifluous mendacious meretricious miscreant misnomer mollify moribund munificent nadir nascent nonplussed obdurate obeisance obsequious obviate officious opprobrium ossify palliate panacea panegyric paragon pariah parsimonious pastiche pedantic pellucid penury perfidy perspicacious philistine platitude plebeian polemic portent prattle precept prescience prevaricate probity proffer prolix propinquity proscribe protean provident puerile punctilious pusillanimous quixotic quotidian raconteur ramification rarefied recondite redoubtable refractory remuneration reprobate restive risible rubric sagacity salubrious sanguine sartorial satiate saturnine schism scintilla sedulous sententious sequester serendipity sinecure solipsism somnolent sophistry spurn stentorian stultify suborn subsume supercilious supine surfeit sybarite sycophant taciturnity tautology tenebrous tortuous traduce trenchant truncate turpitude tyro ubiquity unctuous untrammelled upbraid vacuous vainglorious vapid variegated vaunt venal verbiage verisimilitude vertiginous vicissitude vilify virulent viscous vituperate volition voluble wanton welter winsome wizened yoke zenith zephyr`
+};
+
+/* First list wins, so a word appearing twice takes its lowest level. */
+const LEVEL_OF = (() => {
+  const m = new Map();
+  LEVELS.forEach(l => LEX[l].split(/\s+/).forEach(w => { if (w && !m.has(w)) m.set(w, l); }));
+  return m;
+})();
+
+function syllables(w) {
+  w = w.toLowerCase().replace(/[^a-z]/g, "").replace(/e$/, "");
+  const g = w.match(/[aeiouy]+/g);
+  return Math.max(1, g ? g.length : 1);
+}
+
+/* Inflected forms fall back to their stem: "achieving" -> "achieve" -> B1. */
+const STEMS = [[/ies$/,"y"], [/ied$/,"y"], [/ing$/,""], [/ed$/,""], [/es$/,""],
+               [/s$/,""], [/ly$/,""], [/est$/,""], [/er$/,""]];
+
+function classify(word) {
+  const w = norm(word).split(/[\s\-–]/)[0].replace(/[^a-z']/gi, "").toLowerCase();
+  if (!w) return "A1";
+  if (LEVEL_OF.has(w)) return LEVEL_OF.get(w);
+  for (const [re, rep] of STEMS) {
+    if (!re.test(w)) continue;
+    const stem = w.replace(re, rep);
+    if (LEVEL_OF.has(stem)) return LEVEL_OF.get(stem);
+    if (LEVEL_OF.has(stem + "e")) return LEVEL_OF.get(stem + "e");
+    if (stem.length > 2 && LEVEL_OF.has(stem.slice(0, -1))) return LEVEL_OF.get(stem.slice(0, -1));
+  }
+  let s = syllables(w);
+  if (w.length > 9)  s += .6;
+  if (w.length > 12) s += .6;
+  if (w.length <= 4) s -= .7;
+  if (/(tion|sion|ment|ance|ence|ity|ous|ive|ate|ise|ize|ify|ical|ism|ist|able|ible|logy)$/.test(w)) s += .9;
+  if (/^(pre|post|sub|trans|inter|counter|circum|contra|hyper|meta|anti|dis|mis|over|under)/.test(w)) s += .5;
+  return LEVELS[s < 1.8 ? 0 : s < 2.7 ? 1 : s < 3.6 ? 2 : s < 4.6 ? 3 : s < 5.6 ? 4 : 5];
+}
+
+/* An Excel cell like "b2", "B2 ", "level B2" all resolve to B2. */
+function readLevel(v) {
+  const m = String(v || "").toUpperCase().match(/\b([ABC][12])\b/);
+  return m ? m[1] : null;
+}
+
+const SEED = [
+  ["abandon","v","/əˈbændən/","từ bỏ, bỏ rơi"],
+  ["ability","n","/əˈbɪləti/","khả năng"],
+  ["accurate","adj","/ˈækjərət/","chính xác"],
+  ["achieve","v","/əˈtʃiːv/","đạt được"],
+  ["adapt","v","/əˈdæpt/","thích nghi"],
+  ["benefit","n","/ˈbenɪfɪt/","lợi ích"],
+  ["brief","adj","/briːf/","ngắn gọn, vắn tắt"],
+  ["capable","adj","/ˈkeɪpəbl/","có khả năng"],
+  ["challenge","n","/ˈtʃælɪndʒ/","thử thách"],
+  ["confident","adj","/ˈkɒnfɪdənt/","tự tin"],
+  ["crucial","adj","/ˈkruːʃl/","then chốt, cốt yếu"],
+  ["decrease","v","/dɪˈkriːs/","giảm xuống"],
+  ["develop","v","/dɪˈveləp/","phát triển"],
+  ["efficient","adj","/ɪˈfɪʃnt/","hiệu quả"],
+  ["encourage","v","/ɪnˈkʌrɪdʒ/","khuyến khích"],
+  ["essential","adj","/ɪˈsenʃl/","thiết yếu"],
+  ["familiar","adj","/fəˈmɪliə/","quen thuộc"],
+  ["generate","v","/ˈdʒenəreɪt/","tạo ra"],
+  ["improve","v","/ɪmˈpruːv/","cải thiện"],
+  ["maintain","v","/meɪnˈteɪn/","duy trì"],
+  ["obvious","adj","/ˈɒbviəs/","rõ ràng"],
+  ["participate","v","/pɑːˈtɪsɪpeɪt/","tham gia"],
+  ["reduce","v","/rɪˈdjuːs/","giảm bớt"],
+  ["reliable","adj","/rɪˈlaɪəbl/","đáng tin cậy"],
+  ["significant","adj","/sɪɡˈnɪfɪkənt/","đáng kể"]
+];
+
+let BANK = store.get("oly.bank", null);
+if (!BANK || !BANK.length) {
+  BANK = SEED.map((r, i) => mkWord(i + 1, r[0], r[1], r[2], r[3]));
+  save();
+}
+
+function mkWord(no, word, pos, ipa, meaning, cefr) {
+  return { id: key(word), no, word, pos: pos || "", ipa: ipa || "", meaning: meaning || "",
+           cefr: cefr || classify(word),
+           seen: 0, right: 0, wrong: 0, level: 0, last: 0 };
+}
+/* Word identity. Two spellings that look identical on screen must produce the
+   same key, or the same word enters the bank twice. Each step below fixes a
+   duplicate seen in real files:
+     NFC          - "café" from macOS (e + combining acute) vs Windows (é)
+     \u200b etc   - zero-width and non-breaking spaces pasted from the web
+     \s+ collapse - "look  forward to" typed with a double space
+     punctuation  - "abandon." / "(abandon)" from a numbered list           */
+function key(w) {
+  return String(w == null ? "" : w)
+    .normalize("NFC")
+    .replace(/[\u200b-\u200d\ufeff\u00a0]/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "")
+    .trim()
+    .toLowerCase();
+}
+function save() { store.set("oly.bank", BANK); paintCount(); }
+
+/* Banks saved before levels existed get classified on load. */
+BANK.forEach(w => { if (!w.cefr || !LEVELS.includes(w.cefr)) w.cefr = classify(w.word); });
+
+/* ---- data quality -------------------------------------------------------
+   The quiz trusts whatever is in the file, so a row whose transcription does
+   not belong to its word produces a question nobody can answer. These checks
+   surface such rows instead of letting them reach a test. */
+const IPA_VOWELS = /[aeiouyɑæɐɒɔəɘɛɜɪɨʊʉʌøœɶɤɯɵ]+/g;
+
+function ipaSyllables(ipa) {
+  const bare = String(ipa || "").replace(/[\/\[\]ˈˌ.\s]/g, "");
+  return bare ? (bare.match(IPA_VOWELS) || []).length : 0;
+}
+
+function problems(w) {
+  const out = [];
+  const word = String(w.word || ""), ipa = String(w.ipa || "");
+
+  if (!w.meaning) out.push("chưa có nghĩa");
+
+  if (/\d/.test(word)) out.push("có chữ số");
+  if (word.length > 1 && word === word.toUpperCase() && /^[A-Z]{2,6}$/.test(word))
+    out.push("viết tắt, không phải từ thường");
+
+  if (ipa) {
+    /* Latin letters inside a transcription usually mean the wrong column was
+       pasted in — real IPA uses its own symbols, not plain a-z words. */
+    const bare = ipa.replace(/[\/\[\]ˈˌ.\s]/g, "");
+    if (/[\p{Script=Latin}]{4,}/u.test(bare) && !/[ɑæɐɒɔəɘɛɜɪɨʊʉʌðθʃʒŋɡɹɾʔː]/.test(bare))
+      out.push("phiên âm trông không giống IPA");
+
+    const a = ipaSyllables(ipa), b = syllables(word);
+    if (a && Math.abs(a - b) >= 2)
+      out.push(`phiên âm ${a} âm tiết nhưng từ có ${b}`);
+  }
+  return out;
+}
+
+/* ============================================================== rescan ==
+   Re-reads the whole bank and reports what is wrong with it. Duplicates can
+   exist even though import dedupes, because a bank saved by an older version
+   used a looser identity rule, and because localStorage can be edited by hand.
+   The scan only REPORTS - merging is a separate, explicit step. */
+function scanBank() {
+  const groups = new Map();
+  BANK.forEach(w => {
+    const k = key(w.word);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(w);
+  });
+  const dupes = Array.from(groups.values()).filter(g => g.length > 1);
+  return {
+    total:   BANK.length,
+    unique:  groups.size,
+    dupes,                                            // groups of 2+
+    extra:   dupes.reduce((s, g) => s + g.length - 1, 0),   // rows that would go
+    thin:    BANK.filter(w => !w.meaning).length,
+    noIpa:   BANK.filter(w => !w.ipa).length,
+    unlevel: BANK.filter(w => !LEVELS.includes(w.cefr)).length,
+    flagged: BANK.map(w => ({ w, why: problems(w) })).filter(x => x.why.length)
+  };
+}
+
+/* Of a duplicate group, keep the most complete record - not just the first. */
+function completeness(w) {
+  return (w.meaning ? 8 : 0) + (w.ipa ? 4 : 0) + (w.pos ? 2 : 0) +
+         Math.min(String(w.meaning || "").length / 100, 1);
+}
+
+/* Merging is not "delete the copies" - the learning history of every copy is
+   folded into the survivor, so a rescan never costs you progress. */
+function mergeDupes() {
+  const scan = scanBank();
+  if (!scan.dupes.length) return { merged: 0, groups: 0, before: BANK.length, after: BANK.length };
+  const before = BANK.length;
+  const drop = new Set();
+
+  scan.dupes.forEach(group => {
+    const winner = group.slice().sort((a, b) => completeness(b) - completeness(a))[0];
+    group.forEach(w => {
+      if (w === winner) return;
+      winner.seen  += w.seen;
+      winner.right += w.right;
+      winner.wrong += w.wrong;
+      winner.level  = Math.max(winner.level, w.level);
+      winner.last   = Math.max(winner.last, w.last);
+      if (!winner.meaning && w.meaning) winner.meaning = w.meaning;
+      if (!winner.ipa     && w.ipa)     winner.ipa     = w.ipa;
+      if (!winner.pos     && w.pos)     winner.pos     = w.pos;
+      drop.add(w);
+    });
+    winner.id = key(winner.word);
+    if (!LEVELS.includes(winner.cefr)) winner.cefr = classify(winner.word);
+  });
+
+  BANK = BANK.filter(w => !drop.has(w));
+  BANK.forEach(w => { w.id = key(w.word); });        // repair ids under the new rule
+  renumber(); save(); recount();
+  return { merged: drop.size, groups: scan.dupes.length, before, after: BANK.length };
+}
+
+/* Recount everything the bank feeds: header, home tiles, level rings, table. */
+function recount() {
+  paintCount();
+  if ($("#home-stats") && $("#v-home").classList.contains("on")) paintHome();
+  else if ($("#levels")) paintLevels();
+  if ($("#v-bank") && $("#v-bank").classList.contains("on")) paintBank();
+}
+
+/* The level filter chosen on the home screen. null = every level. */
+let activeLevel = LEVELS.includes(store.get("oly.level", null)) ? store.get("oly.level", null) : null;
+function setLevel(l) {
+  activeLevel = (activeLevel === l) ? null : l;
+  store.set("oly.level", activeLevel);
+  paintHome();
+}
+/* Levels chosen for the TEST specifically. Unlike the home filter this holds
+   several at once, so a paper can mix A1 + A2, or any other combination.
+   Empty set = every level. */
+let testLevels = new Set(
+  (store.get("oly.testLevels", []) || []).filter(l => LEVELS.includes(l)));
+function saveTestLevels() { store.set("oly.testLevels", Array.from(testLevels)); }
+function toggleTestLevel(l) {
+  if (testLevels.has(l)) testLevels.delete(l); else testLevels.add(l);
+  saveTestLevels();
+}
+function setTestLevels(list) { testLevels = new Set(list); saveTestLevels(); }
+
+/* Words a test may draw from. A scope with fewer than 4 usable words cannot
+   fill even one 4-option question, so it widens to the whole bank rather than
+   handing back a one-question paper. The intro says so before you start. */
+const MIN_SCOPE = 4;
+function testPool() {
+  const testable = BANK.filter(w => w.meaning);
+  const base = testable.length ? testable : BANK;
+  if (!testLevels.size) return base;
+  const sub = base.filter(w => testLevels.has(w.cefr));
+  return sub.length >= MIN_SCOPE ? sub : base;
+}
+function testScopeLabel() {
+  if (!testLevels.size) return "Tất cả các mức";
+  return LEVELS.filter(l => testLevels.has(l)).join(" + ");
+}
+
+/* Every study feature draws from here, so the filter applies everywhere. */
+function pool() {
+  /* A word with no meaning cannot become a question, so it is imported and
+     shown in the bank but held out of Học / Kiểm tra / Ôn tập until you fill
+     the meaning in. Each narrowing falls back if it would leave nothing. */
+  const testable = BANK.filter(w => w.meaning);
+  const base = testable.length ? testable : BANK;
+  if (!activeLevel) return base;
+  const sub = base.filter(w => w.cefr === activeLevel);
+  return sub.length ? sub : base;
+}
+function levelChip() {
+  if (!activeLevel) return "";
+  return `<div class="chip"><span class="dot" style="background:${LEVEL_INFO[activeLevel].tint}"></span>
+    Đang lọc theo <b>${activeLevel}</b> · ${BANK.filter(w=>w.cefr===activeLevel).length} từ
+    <button class="chip-x" data-clear-level>Bỏ lọc</button></div>`;
+}
+
+/* Weakest first: unseen, then most-wrong, then longest-ago. */
+function weakest(n) {
+  const scored = pool().map(w => ({ w, s: (w.seen === 0 ? -1000 : 0) + w.wrong * 10 - w.level * 6
+                                     - Math.min((Date.now() - w.last) / 864e5, 30) }));
+  scored.sort((a, b) => a.s - b.s);
+  return scored.slice(0, n).map(x => x.w);
+}
+function grade(w, ok) {
+  w.seen++; w.last = Date.now();
+  if (ok) { w.right++; w.level = Math.min(5, w.level + 1); }
+  else    { w.wrong++; w.level = Math.max(0, w.level - 1); }
+  save();
+}
+/* Three wrong options that are never the right answer and never duplicates. */
+/* Three wrong options that are never the right answer and never duplicates.
+   `alsoCorrect` rejects an option that would ALSO answer the question: a
+   homophone in an IPA question, or a synonym in a meaning question. Without it
+   a question can have two right answers and be impossible to get right. */
+function distractors(correct, field, n, alsoCorrect, scope) {
+  const seen = new Set([norm(correct)]), out = [];
+  for (const source of [scope || pool(), BANK]) {   // chosen scope first, whole bank as backup
+    for (const w of shuffle(source)) {
+      const v = w[field];
+      if (!v || seen.has(norm(v))) continue;
+      if (alsoCorrect && alsoCorrect(w)) continue;
+      seen.add(norm(v)); out.push(v);
+      if (out.length === n) return out;
+    }
+  }
+  return out;
+}
+
+/* ================================================================ speech == */
+let voices = [];
+function loadVoices() { try { voices = speechSynthesis.getVoices() || []; } catch (e) { voices = []; } }
+if ("speechSynthesis" in window) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function say(text, rate) {
+  if (!("speechSynthesis" in window)) { toast("Trình duyệt không hỗ trợ phát âm"); return; }
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; u.rate = rate || .9;
+    const v = voices.find(x => /en[-_]US/i.test(x.lang)) || voices.find(x => /^en/i.test(x.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) { toast("Không phát âm được"); }
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+/* ================================================================ nav == */
+function go(name) {
+  $$(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + name));
+  $$(".tab").forEach(t => t.classList.toggle("on", t.dataset.go === name));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  ["learn","review"].forEach(k => {
+    const el = $("#chip-" + k); if (el) el.innerHTML = levelChip();
+  });
+  if (name === "home")   paintHome();
+  if (name === "learn")  nextLearn();
+  if (name === "test")   paintTestIntro();
+  if (name === "review") startReview();
+  if (name === "bank")   paintBank();
+}
+document.addEventListener("click", e => {
+  const lv = e.target.closest("[data-level]");
+  if (lv) { setLevel(lv.dataset.level); return; }
+  if (e.target.closest("[data-clear-level]")) {
+    activeLevel = null; store.set("oly.level", null);
+    const v = $$(".view.on")[0];
+    if (v && v.id === "v-learn")  nextLearn();
+    if (v && v.id === "v-test")   paintTestIntro();
+    if (v && v.id === "v-review") startReview();
+    if (v && v.id === "v-bank")   paintBank();
+    return;
+  }
+  const b = e.target.closest("[data-go]");
+  if (b) go(b.dataset.go);
+});
+
+function paintCount() { $("#count").textContent = BANK.length + " từ"; }
+
+/* ================================================================ home == */
+function paintHome() {
+  const total = BANK.length, learned = BANK.filter(w => w.level >= 4).length;
+  const started = BANK.filter(w => w.seen > 0).length;
+  const tries = BANK.reduce((s, w) => s + w.right + w.wrong, 0);
+  const acc = tries ? Math.round(BANK.reduce((s, w) => s + w.right, 0) / tries * 100) : 0;
+  $("#home-stats").innerHTML = [
+    [total, "từ trong kho"], [started, "đã học qua"],
+    [learned, "đã thuộc"], [acc + "%", "độ chính xác"]
+  ].map(([n, l], i) => `<div class="stat" style="--i:${i}"><b data-count="${esc(n)}">${esc(n)}</b>
+      <span>${esc(l)}</span></div>`).join("");
+  $("#home-note").textContent = store.live
+    ? "Tiến độ được lưu trong trình duyệt này."
+    : "Bản xem thử không lưu được tiến độ. Khi deploy lên GitHub Pages thì tiến độ sẽ được giữ lại.";
+  paintLevels();
+  countUp();
+}
+
+/* Six CEFR cards. The ring fills with how much of that level you've mastered,
+   so the buttons report progress rather than just filtering. */
+function paintLevels() {
+  const R = 26, C = 2 * Math.PI * R;
+  $("#levels").innerHTML = LEVELS.map((lv, i) => {
+    const info = LEVEL_INFO[lv];
+    const words = BANK.filter(w => w.cefr === lv);
+    const done = words.filter(w => w.level >= 4).length;
+    const pct = words.length ? done / words.length : 0;
+    const on = activeLevel === lv;
+    return `<button class="lvl-card${on ? " on" : ""}${words.length ? "" : " none"}"
+        data-level="${lv}" style="--i:${i};--tint:${info.tint}"
+        aria-pressed="${on}" title="${esc(info.name)} — ${words.length} từ">
+      <span class="ring">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle class="ring-bg" cx="32" cy="32" r="${R}"/>
+          <circle class="ring-fg" cx="32" cy="32" r="${R}"
+            stroke-dasharray="${C.toFixed(1)}"
+            style="stroke-dashoffset:${(C * (1 - pct)).toFixed(1)};--delay:${i * 90 + 250}ms"/>
+        </svg>
+        <span class="code">${lv}</span>
+      </span>
+      <span class="lvl-meta">
+        <b>${esc(info.name)}</b>
+        <span class="n">${words.length} từ${done ? ` · thuộc ${done}` : ""}</span>
+        <span class="ielts">IELTS ${esc(info.ielts)}</span>
+      </span>
+    </button>`;
+  }).join("");
+}
+
+/* Numbers tick up on entry; skipped entirely under reduced-motion. */
+function countUp() {
+  const raf = window.requestAnimationFrame || (f => setTimeout(f, 16));
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  $$("#home-stats b[data-count]").forEach((el, i) => {
+    const raw = el.getAttribute("data-count");
+    const target = parseInt(raw, 10);
+    if (!isFinite(target) || target === 0) return;
+    const suffix = /%$/.test(raw) ? "%" : "";
+    const t0 = Date.now(), dur = 620 + i * 60;
+    el.textContent = "0" + suffix;
+    const step = () => {
+      const k = Math.min(1, (Date.now() - t0) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3))) + suffix;
+      if (k < 1) raf(step);
+    };
+    raf(step);
+  });
+}
+
+/* ================================================================ learn == */
+let mode = "listen", current = null, answered = false;
+
+$("#learn-modes").addEventListener("click", e => {
+  const b = e.target.closest(".mode"); if (!b) return;
+  mode = b.dataset.mode;
+  $$("#learn-modes .mode").forEach(m => m.classList.toggle("on", m === b));
+  nextLearn();
+});
+
+function nextLearn() {
+  if (BANK.length < 4) { $("#learn-card").innerHTML = needMore(); return; }
+  answered = false;
+  current = shuffle(weakest(Math.min(12, pool().length)))[0];
+  ({ listen: drawListen, speak: drawSpeak, read: drawRead, write: drawWrite })[mode]();
+}
+function needMore() {
+  return `<div class="empty"><b>Cần ít nhất 4 từ</b>
+    Nạp file Excel để bắt đầu.<br><br>
+    <button class="btn primary" data-go="bank">Mở kho từ</button></div>`;
+}
+function learnFoot(extra) {
+  return `<div class="btn-row" style="margin-top:20px">
+    ${extra || ""}<button class="btn ghost" id="skip">Bỏ qua →</button></div>`;
+}
+function wire() {
+  const s = $("#skip"); if (s) s.onclick = nextLearn;
+}
+
+/* --- NGHE: nghe rồi chọn đúng mặt chữ --- */
+function drawListen() {
+  const opts = shuffle([current.word,
+    ...distractors(current.word, "word", 3,
+        d => !!current.ipa && norm(d.ipa) === norm(current.ipa))]);
+  $("#learn-card").innerHTML = `
+    <div class="eyebrow">Nghe · chọn đúng từ bạn vừa nghe</div>
+    <div class="stage">
+      <button class="btn primary" id="play" style="font-size:17px;padding:15px 30px">🔊 Nghe lại</button>
+      <div class="hint">Bấm để nghe lại. Chưa hiện mặt chữ.</div>
+    </div>
+    <div class="choices">${opts.map((o, i) => choiceHTML(o, i)).join("")}</div>
+    <div id="fb"></div>${learnFoot()}`;
+  $("#play").onclick = () => say(current.word);
+  say(current.word);
+  bindChoices(v => norm(v) === norm(current.word), current.word);
+  wire();
+}
+
+/* --- NÓI: nhìn chữ, phát âm, máy nghe lại --- */
+function drawSpeak() {
+  $("#learn-card").innerHTML = `
+    <div class="eyebrow">Nói · phát âm từ này</div>
+    <div class="stage">
+      <div class="word-main">${esc(current.word)}</div>
+      <div class="ipa">${esc(current.ipa)}</div>
+      ${current.pos ? `<div class="pos">${esc(current.pos)}</div>` : ""}
+    </div>
+    <div class="btn-row" style="justify-content:center;margin-top:6px">
+      <button class="btn" id="play">🔊 Nghe mẫu</button>
+    </div>
+    <button class="mic" id="mic" title="Bấm rồi nói">🎙</button>
+    <div class="hint" id="mic-hint">Bấm micro rồi đọc to từ này</div>
+    <div id="fb"></div>${learnFoot()}`;
+  $("#play").onclick = () => say(current.word);
+  wire();
+
+  if (!SR) {
+    $("#mic-hint").textContent = "Trình duyệt này không nhận diện giọng nói — hãy dùng Chrome.";
+    $("#mic").disabled = true;
+    $("#fb").innerHTML = `<div class="btn-row" style="margin-top:16px;justify-content:center">
+      <button class="btn" id="self-no">Chưa chuẩn</button>
+      <button class="btn primary" id="self-ok">Tôi đọc được</button></div>`;
+    $("#self-ok").onclick = () => { grade(current, true); nextLearn(); };
+    $("#self-no").onclick = () => { grade(current, false); nextLearn(); };
+    return;
+  }
+
+  $("#mic").onclick = () => {
+    const rec = new SR();
+    rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 5;
+    $("#mic").classList.add("rec");
+    $("#mic-hint").textContent = "Đang nghe… đọc to lên";
+    rec.onresult = ev => {
+      const heard = Array.from(ev.results[0]).map(r => norm(r.transcript));
+      const ok = heard.some(h => h === norm(current.word) || h.split(" ").includes(norm(current.word)));
+      grade(current, ok);
+      $("#fb").innerHTML = ok
+        ? `<div class="verdict ok">Chuẩn rồi — máy nghe ra “${esc(heard[0])}”</div>`
+        : `<div class="verdict no">Máy nghe ra “${esc(heard[0] || "…")}”
+             <small>Cần: ${esc(current.word)} ${esc(current.ipa)}</small></div>`;
+      setTimeout(nextLearn, 1700);
+    };
+    rec.onerror = ev => {
+      $("#mic-hint").textContent = ev.error === "not-allowed"
+        ? "Bạn cần cho phép dùng micro." : "Không nghe được, thử lại.";
+      $("#mic").classList.remove("rec");
+    };
+    rec.onend = () => $("#mic").classList.remove("rec");
+    try { rec.start(); } catch (e) { $("#mic").classList.remove("rec"); }
+  };
+}
+
+/* --- ĐỌC: nhìn từ, chọn nghĩa --- */
+function drawRead() {
+  const opts = shuffle([current.meaning,
+    ...distractors(current.meaning, "meaning", 3,
+        d => norm(d.meaning) === norm(current.meaning))]);
+  $("#learn-card").innerHTML = `
+    <div class="eyebrow">Đọc · chọn nghĩa đúng</div>
+    <div class="stage">
+      <div class="word-main">${esc(current.word)}</div>
+      <div class="ipa">${esc(current.ipa)}</div>
+      ${current.pos ? `<div class="pos">${esc(current.pos)}</div>` : ""}
+    </div>
+    <div class="choices">${opts.map((o, i) => choiceHTML(o, i)).join("")}</div>
+    <div id="fb"></div>${learnFoot(`<button class="btn" id="play">🔊 Nghe</button>`)}`;
+  const p = $("#play"); if (p) p.onclick = () => say(current.word);
+  bindChoices(v => norm(v) === norm(current.meaning), current.meaning);
+  wire();
+}
+
+/* --- VIẾT: nhìn nghĩa, gõ từ --- */
+function drawWrite() {
+  $("#learn-card").innerHTML = `
+    <div class="eyebrow">Viết · gõ từ tiếng Anh</div>
+    <div class="stage">
+      <div class="meaning-big">${esc(current.meaning)}</div>
+      ${current.pos ? `<div class="pos">${esc(current.pos)}</div>` : ""}
+      <div class="ipa" style="margin-top:10px">${esc(current.ipa)}</div>
+    </div>
+    <input class="field" id="typed" placeholder="Gõ từ tiếng Anh rồi Enter"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div id="fb"></div>
+    ${learnFoot(`<button class="btn primary" id="check">Kiểm tra</button>`)}`;
+  const box = $("#typed");
+  box.focus();
+  const check = () => {
+    if (answered) { nextLearn(); return; }
+    answered = true;
+    const typed = norm(box.value);
+    const exact = typed === norm(current.word);
+    // a synonym is a correct answer to "meaning -> word", so accept it
+    const synonym = !exact && !!typed &&
+      BANK.some(d => norm(d.word) === typed && norm(d.meaning) === norm(current.meaning));
+    const ok = exact || synonym;
+    grade(current, ok);
+    box.classList.add(ok ? "ok" : "no");
+    box.disabled = true;
+    $("#fb").innerHTML = ok
+      ? `<div class="verdict ok">${synonym
+            ? `Cũng đúng — <b>${esc(box.value)}</b> đồng nghĩa. Từ đang học: ${esc(current.word)} ${esc(current.ipa)}`
+            : `Đúng — ${esc(current.word)} ${esc(current.ipa)}`}</div>`
+      : `<div class="verdict no">Đáp án: <b>${esc(current.word)}</b> ${esc(current.ipa)}
+           <small>Bạn viết: ${esc(box.value || "(bỏ trống)")}</small></div>`;
+    say(current.word);
+    $("#check").textContent = "Từ tiếp theo →";
+  };
+  $("#check").onclick = check;
+  box.addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+  wire();
+}
+
+function choiceHTML(text, i) {
+  return `<button class="choice" data-v="${esc(text)}">
+    <span class="letter">${"ABCD"[i]}</span><span>${esc(text)}</span></button>`;
+}
+function bindChoices(isRight, rightVal) {
+  $$("#learn-card .choice").forEach(btn => {
+    btn.onclick = () => {
+      if (answered) return; answered = true;
+      const ok = isRight(btn.dataset.v);
+      grade(current, ok);
+      $$("#learn-card .choice").forEach(b => {
+        b.disabled = true;
+        if (norm(b.dataset.v) === norm(rightVal)) b.classList.add("right");
+        else if (b === btn) b.classList.add("wrong");
+      });
+      $("#fb").innerHTML = ok
+        ? `<div class="verdict ok">Đúng — ${esc(current.word)} ${esc(current.ipa)} · ${esc(current.meaning)}</div>`
+        : `<div class="verdict no">Chưa đúng
+             <small>${esc(current.word)} ${esc(current.ipa)} — ${esc(current.meaning)}</small></div>`;
+      say(current.word);
+      setTimeout(nextLearn, ok ? 1200 : 2300);
+    };
+  });
+}
+
+/* ================================================================ test == */
+const N_Q = 20, MINUTES = 20;
+let quiz = null, timer = null;
+
+let mixOpen = false;
+
+function paintTestIntro() {
+  clearInterval(timer);
+  if (BANK.length < 4) { $("#test-host").innerHTML = `<h2>Kiểm tra</h2>${needMore()}`; return; }
+
+  const countOf = l => BANK.filter(w => w.cefr === l && w.meaning).length;
+  const scope = testPool();
+  const n = Math.min(N_Q, scope.length);
+  /* A level with fewer than 4 usable words cannot fill a 4-option question on
+     its own, so it is offered but marked - picking it silently widens the
+     scope, and saying so up front is better than a surprise. */
+  const inScope = testLevels.size
+    ? BANK.filter(w => w.meaning && testLevels.has(w.cefr)).length : scope.length;
+  const thinScope = testLevels.size && inScope < MIN_SCOPE;
+
+  $("#test-host").innerHTML = `
+    <h2>Kiểm tra</h2>
+    <p class="sub">Trắc nghiệm A · B · C · D. Hết giờ bài tự nộp.</p>
+
+    <div class="card">
+      <div class="eyebrow">Chọn phạm vi đề</div>
+      <div class="scope">
+        <button class="scope-btn${testLevels.size ? "" : " on"}" data-scope="all">
+          Tất cả<span class="sc-n">${BANK.filter(w => w.meaning).length}</span></button>
+        ${LEVELS.map(l => `
+          <button class="scope-btn${testLevels.size === 1 && testLevels.has(l) ? " on" : ""}${
+              countOf(l) ? "" : " empty"}"
+            data-scope="${l}" style="--tint:${LEVEL_INFO[l].tint}"
+            title="${esc(LEVEL_INFO[l].name)} — IELTS ${esc(LEVEL_INFO[l].ielts)}">
+            ${l}<span class="sc-n">${countOf(l)}</span></button>`).join("")}
+        <button class="scope-btn mix${mixOpen ? " on" : ""}" data-scope="mix">
+          Trộn mức${testLevels.size > 1 ? `<span class="sc-n">${testLevels.size}</span>` : ""}</button>
+      </div>
+
+      ${mixOpen ? `
+      <div class="mixer">
+        <div class="mix-head">Chọn nhiều mức để trộn vào một đề</div>
+        <div class="mix-grid">
+          ${LEVELS.map(l => `
+            <button class="mix-btn${testLevels.has(l) ? " on" : ""}${countOf(l) ? "" : " empty"}"
+              data-mix="${l}" style="--tint:${LEVEL_INFO[l].tint}"
+              aria-pressed="${testLevels.has(l)}">
+              <span class="tick">${testLevels.has(l) ? "✓" : ""}</span>
+              <b>${l}</b><span class="mx-n">${countOf(l)} từ</span></button>`).join("")}
+        </div>
+        <div class="mix-foot">
+          <span>Đề sẽ lấy từ <b>${esc(testScopeLabel())}</b> — ${scope.length} từ</span>
+          <span class="mix-quick">
+            <button class="lnk" data-mix-preset="a">A1 + A2</button>
+            <button class="lnk" data-mix-preset="b">B1 + B2</button>
+            <button class="lnk" data-mix-preset="c">C1 + C2</button>
+            <button class="lnk" data-mix-preset="none">Bỏ chọn</button>
+          </span>
+        </div>
+      </div>` : ""}
+
+      <div class="stats" style="margin-top:16px">
+        <div class="stat" style="--i:0"><b>${n}</b><span>câu hỏi</span></div>
+        <div class="stat" style="--i:1"><b>${MINUTES}</b><span>phút</span></div>
+        <div class="stat" style="--i:2"><b>4</b><span>lựa chọn mỗi câu</span></div>
+        <div class="stat" style="--i:3"><b>${scope.length}</b><span>từ trong phạm vi</span></div>
+      </div>
+
+      <p class="note">Phạm vi: <b>${esc(testScopeLabel())}</b>.
+        Đề trộn bốn dạng: từ → nghĩa, nghĩa → từ, phiên âm → từ, và nghe → chọn từ.
+        ${thinScope ? `Mức đã chọn chỉ có ${inScope} từ — chưa đủ ${MIN_SCOPE} từ để ra một câu
+           bốn đáp án, nên đề sẽ lấy từ toàn bộ kho.` : ""}
+        ${!thinScope && scope.length < N_Q
+          ? `Phạm vi chỉ có ${scope.length} từ nên đề rút còn ${n} câu.` : ""}</p>
+
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn primary" id="start-test">Bắt đầu làm bài</button>
+      </div>
+    </div>`;
+
+  $("#start-test").onclick = startTest;
+
+  $$("#test-host [data-scope]").forEach(b => b.onclick = () => {
+    const v = b.dataset.scope;
+    if (v === "all")      { setTestLevels([]); mixOpen = false; }
+    else if (v === "mix") { mixOpen = !mixOpen; }
+    else                  { setTestLevels([v]); mixOpen = false; }
+    paintTestIntro();
+  });
+  $$("#test-host [data-mix]").forEach(b => b.onclick = () => {
+    toggleTestLevel(b.dataset.mix); paintTestIntro();
+  });
+  $$("#test-host [data-mix-preset]").forEach(b => b.onclick = () => {
+    setTestLevels({ a:["A1","A2"], b:["B1","B2"], c:["C1","C2"], none:[] }[b.dataset.mixPreset]);
+    paintTestIntro();
+  });
+}
+
+/* Build one question of a given kind, or null if this word cannot support it
+   (no IPA, or every candidate distractor would also be a correct answer). */
+function makeQuestion(w, kind, scope) {
+  let prompt, label, field, correct, alsoCorrect = null;
+  if (kind === "w2m") {
+    prompt = w.word; label = "Từ → nghĩa"; field = "meaning"; correct = w.meaning;
+  } else if (kind === "m2w") {
+    prompt = w.meaning; label = "Nghĩa → từ"; field = "word"; correct = w.word;
+    alsoCorrect = d => norm(d.meaning) === norm(w.meaning);   // a synonym answers it too
+  } else if (kind === "ipa2w") {
+    if (!w.ipa) return null;                                  // nothing to show as a prompt
+    prompt = w.ipa; label = "Phiên âm → từ"; field = "word"; correct = w.word;
+    alsoCorrect = d => norm(d.ipa) === norm(w.ipa);           // a homophone is equally right
+  } else {
+    if (!("speechSynthesis" in window)) return null;
+    prompt = "🔊"; label = "Nghe → chọn từ"; field = "word"; correct = w.word;
+    alsoCorrect = d => !!w.ipa && norm(d.ipa) === norm(w.ipa);
+  }
+  if (!correct) return null;
+  const wrong = distractors(correct, field, 3, alsoCorrect, scope);
+  if (wrong.length < 3) return null;         // not enough genuinely-wrong options
+  return { w, kind, label, prompt, correct, opts: shuffle([correct, ...wrong]), pick: null };
+}
+
+/* One question per word. If a word cannot support the kind drawn for it - a
+   bank where several words share a meaning can reject every distractor - try
+   the other kinds before giving up on that word, so the paper still fills. */
+function buildQuestions(n, scope) {
+  const source = scope || pool();
+  const picked = shuffle(source).slice(0, n);
+  const out = [];
+  picked.forEach(w => {
+    for (const kind of shuffle(["w2m", "m2w", "ipa2w", "hear"])) {
+      const q = makeQuestion(w, kind, source);
+      if (q) { out.push(q); return; }
+    }
+  });
+  return out;
+}
+
+function startTest() {
+  const scope = testPool();
+  const qs = buildQuestions(Math.min(N_Q, scope.length), scope);
+  if (!qs.length) {
+    $("#test-host").innerHTML = `<h2>Kiểm tra</h2><div class="card"><div class="empty">
+      <b>Chưa ra được đề</b>
+      Các từ trong kho đang trùng nghĩa hoặc trùng phiên âm nhau, nên không tạo được
+      câu hỏi có đáp án duy nhất. Hãy nạp thêm từ hoặc sửa lại nghĩa cho khác nhau.<br><br>
+      <button class="btn primary" data-go="bank">Mở kho từ</button></div></div>`;
+    toast("Kho từ chưa đủ dữ liệu để ra đề");
+    return;
+  }
+  quiz = { qs, i: 0, left: MINUTES * 60, done: false, scope: testScopeLabel() };
+  drawTest();
+  timer = setInterval(() => {
+    if (!quiz || quiz.done) return clearInterval(timer);
+    quiz.left--;
+    const c = $("#clock");
+    if (c) {
+      c.textContent = fmt(quiz.left);
+      c.classList.toggle("low", quiz.left <= 60);
+    }
+    if (quiz.left <= 0) { clearInterval(timer); submitTest(true); }
+  }, 1000);
+}
+function fmt(s) {
+  s = Math.max(0, s);
+  return String((s / 60) | 0).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+}
+
+function drawTest() {
+  const q = quiz.qs[quiz.i], n = quiz.qs.length;
+  const answeredCount = quiz.qs.filter(x => x.pick !== null).length;
+  $("#test-host").innerHTML = `
+    <div class="testbar">
+      <div class="clock" id="clock">${fmt(quiz.left)}</div>
+      <div style="font-size:13px;color:var(--ink-soft);font-weight:600">
+        đã làm ${answeredCount}/${n}
+        <span class="bar-scope">${esc(quiz.scope)}</span></div>
+      <div class="qnav">${quiz.qs.map((x, i) =>
+        `<button class="qdot ${x.pick !== null ? "done" : ""} ${i === quiz.i ? "now" : ""}"
+          data-jump="${i}">${i + 1}</button>`).join("")}</div>
+    </div>
+    <div class="card">
+      <div class="qhead"><span class="qnum">Câu ${quiz.i + 1} / ${n}</span>
+        <span class="qtype">${esc(q.label)}</span></div>
+      ${q.kind === "hear"
+        ? `<div class="stage" style="min-height:110px">
+             <button class="btn primary" id="q-play" style="font-size:17px;padding:15px 30px">🔊 Nghe</button>
+             <div class="hint">Bấm để nghe lại</div></div>`
+        : `<div class="qtext ${q.kind === "ipa2w" ? "" : ""}"
+              style="${q.kind === "ipa2w" ? "font-family:var(--ipa)" : ""}">${esc(q.prompt)}</div>`}
+      <div class="choices">${q.opts.map((o, i) =>
+        `<button class="choice ${q.pick === o ? "sel" : ""}" data-v="${esc(o)}">
+           <span class="letter">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn" id="prev" ${quiz.i === 0 ? "disabled" : ""}>← Câu trước</button>
+        <button class="btn" id="next" ${quiz.i === n - 1 ? "disabled" : ""}>Câu sau →</button>
+        <button class="btn red" id="submit" style="margin-left:auto">Nộp bài</button>
+      </div>
+    </div>
+    <div class="bar"><i style="width:${answeredCount / n * 100}%"></i></div>
+    <div class="meta"><span>Đã trả lời ${answeredCount}</span><span>Còn ${n - answeredCount}</span></div>`;
+
+  if (q.kind === "hear") { $("#q-play").onclick = () => say(q.w.word); say(q.w.word); }
+  $$("#test-host .choice").forEach(b => b.onclick = () => {
+    q.pick = b.dataset.v;
+    if (quiz.i < quiz.qs.length - 1) { quiz.i++; drawTest(); }
+    else drawTest();
+  });
+  $("#prev").onclick = () => { quiz.i--; drawTest(); };
+  $("#next").onclick = () => { quiz.i++; drawTest(); };
+  $("#submit").onclick = () => {
+    const miss = quiz.qs.filter(x => x.pick === null).length;
+    if (miss && !confirm(`Còn ${miss} câu chưa trả lời. Vẫn nộp bài?`)) return;
+    submitTest(false);
+  };
+  $$("[data-jump]").forEach(b => b.onclick = () => { quiz.i = +b.dataset.jump; drawTest(); });
+}
+
+function submitTest(auto) {
+  clearInterval(timer);
+  quiz.done = true;
+  quiz.qs.forEach(q => grade(q.w, norm(q.pick) === norm(q.correct)));
+  const right = quiz.qs.filter(q => norm(q.pick) === norm(q.correct)).length;
+  const n = quiz.qs.length, pct = Math.round(right / n * 100);
+  const wrongs = quiz.qs.filter(q => norm(q.pick) !== norm(q.correct));
+  const line = pct >= 90 ? "Xuất sắc." : pct >= 70 ? "Khá tốt — xem lại phần sai bên dưới."
+             : pct >= 50 ? "Tạm ổn. Ôn lại những từ sai rồi làm lại." : "Cần ôn thêm. Vào mục Ôn tập nhé.";
+
+  $("#test-host").innerHTML = `
+    <h2>Kết quả</h2>
+    <p class="sub">${auto ? "Hết giờ — bài đã tự nộp." : "Bài đã nộp."}
+      Phạm vi: <b>${esc(quiz.scope)}</b> · thời gian còn lại: ${fmt(quiz.left)}</p>
+    <div class="card">
+      <div class="score-hero">
+        <div><span class="big">${right}</span><span class="of"> / ${n}</span></div>
+        <div class="verdict-line">${pct}% — ${esc(line)}</div>
+      </div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="btn-row" style="margin-top:20px;justify-content:center">
+        <button class="btn primary" id="again">Làm đề mới</button>
+        <button class="btn" data-go="review">Ôn từ sai</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">${wrongs.length ? `Chữa bài — ${wrongs.length} câu sai` : "Chữa bài"}</div>
+      ${wrongs.length === 0
+        ? `<div class="empty"><b>Đúng hết cả bài</b>Không có câu nào cần chữa.</div>`
+        : wrongs.map(q => markHTML(q, quiz.qs.indexOf(q) + 1)).join("")}
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Toàn bộ đáp án</div>
+      ${quiz.qs.map((q, i) => {
+        const ok = norm(q.pick) === norm(q.correct);
+        return `<div class="mark ${ok ? "ok" : ""}">
+          <div class="q">${i + 1}. ${q.kind === "hear" ? "🔊 " + esc(q.w.word) : esc(q.prompt)}</div>
+          <div class="line"><span class="lbl">Đáp án</span><span class="penned">${esc(q.correct)}</span></div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  $("#again").onclick = startTest;
+}
+
+function markHTML(q, num) {
+  const w = q.w;
+  return `<div class="mark">
+    <div class="q">${num}. ${q.kind === "hear"
+      ? `🔊 (nghe) — <span style="font-family:var(--ipa)">${esc(w.ipa)}</span>`
+      : esc(q.prompt)}</div>
+    <div class="line"><span class="lbl">Bạn chọn</span>
+      <span class="struck">${esc(q.pick === null ? "(bỏ trống)" : q.pick)}</span></div>
+    <div class="line"><span class="lbl">Đáp án</span>
+      <span class="penned">${esc(q.correct)}</span></div>
+    <div class="solution">
+      <span class="w">${esc(w.word)}</span><span class="p">${esc(w.ipa)}</span>
+      ${w.pos ? ` · <b>${esc(w.pos)}</b>` : ""}<br>${esc(w.meaning)}
+      <div style="margin-top:7px;font-size:13px;color:var(--ink-soft)">
+        ${esc(explain(q))}</div>
+    </div>
+  </div>`;
+}
+function explain(q) {
+  const w = q.w;
+  if (q.kind === "w2m")   return `“${w.word}” nghĩa là “${w.meaning}”.`;
+  if (q.kind === "m2w")   return `Nghĩa “${w.meaning}” ứng với từ “${w.word}”.`;
+  if (q.kind === "ipa2w") return `Phiên âm ${w.ipa} đọc thành “${w.word}”.`;
+  return `Từ bạn nghe là “${w.word}” ${w.ipa}.`;
+}
+
+/* ================================================================ review == */
+let deck = [], di = 0;
+
+function startReview() {
+  if (!BANK.length) { $("#review-host").innerHTML = needMore(); return; }
+  deck = weakest(Math.min(20, pool().length)); di = 0;
+  drawCard();
+}
+function drawCard() {
+  if (di >= deck.length) {
+    $("#review-host").innerHTML = `<div class="card"><div class="empty">
+      <b>Xong vòng ôn này</b>Bạn đã lướt qua ${deck.length} từ.<br><br>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn primary" id="re">Ôn vòng nữa</button>
+        <button class="btn" data-go="test">Làm bài kiểm tra</button>
+      </div></div></div>`;
+    $("#re").onclick = startReview;
+    return;
+  }
+  const w = deck[di];
+  $("#review-host").innerHTML = `
+    <div class="meta" style="margin-bottom:10px">
+      <span>Thẻ ${di + 1} / ${deck.length}</span><span>Mức thuộc ${w.level}/5</span></div>
+    <div class="bar" style="margin-top:0"><i style="width:${di / deck.length * 100}%"></i></div>
+    <div class="flip" id="flip">
+      <div class="flip-in">
+        <div class="face">
+          <div class="word-main">${esc(w.word)}</div>
+          <div class="ipa">${esc(w.ipa)}</div>
+          ${w.pos ? `<div class="pos">${esc(w.pos)}</div>` : ""}
+          <div class="hint">Bấm vào thẻ để lật</div>
+        </div>
+        <div class="face back">
+          <div class="meaning-big">${esc(w.meaning)}</div>
+          <div class="ipa">${esc(w.word)} ${esc(w.ipa)}</div>
+          <div class="hint">Bấm để lật lại</div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn" id="hear">🔊 Nghe</button>
+      <button class="btn red" id="no">Chưa nhớ</button>
+      <button class="btn primary" id="yes" style="margin-left:auto">Nhớ rồi ✓</button>
+    </div>`;
+  $("#flip").onclick = () => $("#flip").classList.toggle("on");
+  $("#hear").onclick = e => { e.stopPropagation(); say(w.word); };
+  $("#yes").onclick = () => { grade(w, true);  di++; drawCard(); };
+  $("#no").onclick  = () => { grade(w, false); di++; drawCard(); };
+}
+
+/* ================================================================ bank == */
+const drop = $("#drop"), fileInput = $("#file");
+$("#pick-file").onclick = () => fileInput.click();
+fileInput.onchange = e => { handleFiles(e.target.files); fileInput.value = ""; };
+["dragenter", "dragover"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hot"); }));
+["dragleave", "drop"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hot"); }));
+drop.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
+
+function handleFiles(list) {
+  const files = Array.from(list || []);
+  if (!files.length) return;
+  if (typeof XLSX === "undefined") {
+    toast("Chưa tải được thư viện Excel — kiểm tra mạng rồi tải lại trang"); return;
+  }
+  let done = 0, added = 0, updated = 0, skipped = 0, thin = 0;
+  files.forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const wb = XLSX.read(new Uint8Array(ev.target.result), { type: "array" });
+        wb.SheetNames.forEach(sn => {
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, blankrows: false, defval: "" });
+          const res = ingest(rows);
+          added += res.added; updated += res.updated;
+          skipped += res.skipped; thin += res.thin;
+        });
+      } catch (err) {
+        toast("Không đọc được " + f.name);
+      }
+      if (++done === files.length) {
+        renumber(); save(); paintBank();
+        toast(`Thêm ${added} từ mới · cập nhật ${updated}`
+          + (thin ? ` · ${thin} từ chưa có nghĩa` : "")
+          + (skipped ? ` · bỏ qua ${skipped} dòng` : ""));
+      }
+    };
+    r.onerror = () => { if (++done === files.length) { renumber(); save(); paintBank(); } };
+    r.readAsArrayBuffer(f);
+  });
+}
+
+/* Columns are positional per the spec: STT | Từ | Loại từ | Phiên âm | Nghĩa.
+   A first row whose 2nd cell is a header word (not vocabulary) is dropped. */
+function ingest(rows) {
+  let added = 0, updated = 0, skipped = 0, thin = 0;
+  const HDR_WORD = /^(word|words|vocab|vocabulary|english|term|từ|tu|từ vựng|tiếng anh)$/i;
+  const HDR_NO   = /^(stt|no|no\.|num|#|id|index|order|số|số thứ tự|thứ tự)$/i;
+  const index = new Map(BANK.map(w => [w.id, w]));
+
+  rows.forEach((row, i) => {
+    if (!row) return;
+    const cell = k => String(row[k] == null ? "" : row[k]).trim();
+    const no = cell(0), word = cell(1), pos = cell(2), ipa = cell(3),
+          meaning = cell(4), lvl = readLevel(cell(5));
+
+    if (i === 0 && (HDR_WORD.test(word) || HDR_NO.test(no))) return;      // header row
+    const anyContent = row.some(c => String(c == null ? "" : c).trim());
+    if (!word || !/[a-z]/i.test(word)) { if (anyContent) skipped++; return; }
+
+    /* A vocabulary entry is a word or short phrase, never a sentence, and
+       column 2 holds the ENGLISH word — Vietnamese text there is a caption or
+       an instruction, not an entry. The character class below is the set of
+       Vietnamese diacritics that never occur in English loanwords, so café,
+       naïve and fête still import fine. Together these keep a notes sheet out
+       of the bank while still importing rows whose meaning cell is blank. */
+    const isEntry = word.split(/\s+/).length <= 5 && word.length <= 40
+                    && !/[đơưảãạẳẵặẩẫậẻẽẹểễệỉĩịỏõọổỗộởỡợủũụửữựỷỹỵ]/i.test(word);
+    const hasAnyDetail = !!(meaning || ipa || pos || lvl || /^\d+$/.test(no));
+    if (!isEntry || !hasAnyDetail) { skipped++; return; }
+    if (!meaning) thin++;
+
+    const id = key(word);
+    const hit = index.get(id);
+    if (hit) {
+      if (pos)     hit.pos = pos;
+      if (ipa)     hit.ipa = ipa;
+      if (meaning) hit.meaning = meaning;
+      if (lvl)     hit.cefr = lvl;
+      updated++;
+    } else {
+      const w = mkWord(0, word, pos, ipa, meaning, lvl);
+      BANK.push(w); index.set(id, w); added++;
+    }
+  });
+  return { added, updated, skipped, thin };
+}
+function renumber() { BANK.forEach((w, i) => w.no = i + 1); }
+
+$("#rescan").onclick = () => {
+  const scan = scanBank();
+  paintScan(scan);
+  toast(scan.dupes.length
+    ? `Đọc lại ${scan.total} dòng — thấy ${scan.dupes.length} từ trùng`
+    : scan.flagged.length
+      ? `Đọc lại ${scan.total} từ — ${scan.flagged.length} dòng cần xem lại`
+      : `Đọc lại ${scan.total} từ — không có từ trùng`);
+};
+document.addEventListener("click", e => {
+  if (e.target.closest("#do-merge")) {
+    const res = mergeDupes();
+    paintScan(null, res);
+    toast(`Đã gộp ${res.merged} dòng trùng · còn ${res.after} từ`);
+  }
+  if (e.target.closest("#close-scan")) $("#scan-report").innerHTML = "";
+});
+
+$("#search").addEventListener("input", paintBank);
+$("#wipe").onclick = () => {
+  if (!confirm("Xoá toàn bộ kho từ và tiến độ? Không khôi phục được.")) return;
+  BANK = []; save(); paintBank(); toast("Đã xoá kho từ");
+};
+
+/* Rows the quiz cannot use, or that look like a data-entry mistake in the
+   Excel file. Fix them in the file and re-import - re-importing updates in
+   place, so nothing is duplicated. */
+function flaggedHTML(scan) {
+  if (!scan.flagged.length) return "";
+  return `<div class="flagged">
+    <div class="flagged-head">${scan.flagged.length} dòng nên kiểm tra lại trong file Excel</div>
+    ${scan.flagged.slice(0, 15).map(({ w, why }) => `
+      <div class="flag">
+        <b>${esc(w.word)}</b>
+        <span class="flag-ipa">${esc(w.ipa || "—")}</span>
+        <span class="flag-why">${why.map(r => esc(r)).join(" · ")}</span>
+      </div>`).join("")}
+    ${scan.flagged.length > 15
+      ? `<div class="flag more">… và ${scan.flagged.length - 15} dòng nữa</div>` : ""}
+  </div>`;
+}
+
+/* The scan result, rendered as something you can act on rather than a bare
+   number. Duplicate groups are listed so you can see what would be merged. */
+function paintScan(scan, justMerged) {
+  const host = $("#scan-report");
+  if (!host) return;
+
+  if (justMerged) {
+    host.innerHTML = `<div class="scan ok">
+      <div class="scan-head"><b>Đã gộp xong</b>
+        <span class="scan-n">${justMerged.before} → ${justMerged.after} từ</span></div>
+      <p>Gộp ${justMerged.merged} bản trùng trong ${justMerged.groups} nhóm.
+         Lịch sử học của các bản trùng đã được cộng vào từ giữ lại, không mất tiến độ.</p>
+    </div>`;
+    return;
+  }
+
+  if (!scan.dupes.length) {
+    host.innerHTML = `<div class="scan ${scan.flagged.length ? "warn-scan" : "ok"}">
+      <div class="scan-head"><b>${scan.flagged.length ? "Không có từ trùng" : "Kho từ sạch"}</b>
+        <span class="scan-n">${scan.total} từ${scan.flagged.length
+          ? ` · ${scan.flagged.length} dòng cần xem lại` : " · không có từ trùng"}</span></div>
+      <p>Đã đọc lại toàn bộ ${scan.total} từ.
+        ${scan.noIpa ? `${scan.noIpa} từ chưa có phiên âm.` : ""}</p>
+      ${flaggedHTML(scan)}
+    </div>`;
+    return;
+  }
+
+  host.innerHTML = `<div class="scan warn-scan">
+    <div class="scan-head"><b>Tìm thấy ${scan.dupes.length} từ bị trùng</b>
+      <span class="scan-n">${scan.total} dòng · ${scan.unique} từ thật</span></div>
+    <p>Gộp lại sẽ bỏ ${scan.extra} dòng thừa và cộng dồn lịch sử học vào từ được giữ.</p>
+    <div class="dupes">${scan.dupes.slice(0, 12).map(g => `
+      <div class="dupe">
+        <b>${esc(g[0].word)}</b>
+        <span class="dupe-n">${g.length} bản</span>
+        <span class="dupe-v">${g.map(w => esc(JSON.stringify(w.word))).join(" · ")}</span>
+      </div>`).join("")}
+      ${scan.dupes.length > 12 ? `<div class="dupe more">… và ${scan.dupes.length - 12} từ nữa</div>` : ""}
+    </div>
+    ${flaggedHTML(scan)}
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn primary" id="do-merge">Gộp ${scan.extra} dòng trùng</button>
+      <button class="btn ghost" id="close-scan">Để sau</button>
+    </div>
+  </div>`;
+}
+
+function paintBank() {
+  paintCount();
+  const q = norm($("#search").value);
+  const rows = q ? BANK.filter(w => norm(w.word).includes(q) || norm(w.meaning).includes(q)) : BANK;
+  if (!BANK.length) {
+    $("#bank-host").innerHTML = `<div class="empty"><b>Kho từ đang trống</b>
+      Nạp một file Excel 5 cột để bắt đầu.</div>`;
+    return;
+  }
+  if (!rows.length) { $("#bank-host").innerHTML = `<div class="empty"><b>Không tìm thấy</b>
+    Thử từ khoá khác.</div>`; return; }
+  $("#bank-host").innerHTML = `<table>
+    <thead><tr><th>#</th><th>Từ</th><th>Loại</th><th>Phiên âm</th><th>Nghĩa</th>
+      <th>CEFR</th><th>Thuộc</th><th></th></tr></thead>
+    <tbody>${rows.map(w => `<tr>
+      <td style="color:var(--ink-soft);font-variant-numeric:tabular-nums">${w.no}</td>
+      <td class="tw">${esc(w.word)}</td>
+      <td style="color:var(--red);font-size:12.5px;font-weight:700">${esc(w.pos)}</td>
+      <td class="tp">${esc(w.ipa)}</td>
+      <td>${w.meaning ? esc(w.meaning) : `<span class="thin">chưa có nghĩa</span>`}</td>
+      <td><select class="cefr-pick" data-cefr="${esc(w.id)}"
+            style="--tint:${LEVEL_INFO[w.cefr].tint}">${LEVELS.map(l =>
+            `<option value="${l}"${l === w.cefr ? " selected" : ""}>${l}</option>`).join("")}</select></td>
+      <td><span class="lvl">${[0,1,2,3,4].map(i =>
+        `<i class="${i < w.level ? "f" : ""}"></i>`).join("")}</span></td>
+      <td><button class="btn ghost" style="padding:3px 9px;font-size:12px"
+            data-del="${esc(w.id)}">Xoá</button></td>
+    </tr>`).join("")}</tbody></table>`;
+  $$("[data-cefr]").forEach(sel => sel.onchange = () => {
+    const w = BANK.find(x => x.id === sel.dataset.cefr);
+    if (!w) return;
+    w.cefr = sel.value; save(); paintBank();
+    toast(`${w.word} → ${sel.value}`);
+  });
+  $$("[data-del]").forEach(b => b.onclick = () => {
+    BANK = BANK.filter(w => w.id !== b.dataset.del);
+    renumber(); save(); paintBank();
+  });
+}
+
+$("#dl-sample").onclick = () => {
+  if (typeof XLSX === "undefined") { toast("Chưa tải được thư viện Excel — kiểm tra mạng rồi tải lại trang"); return; }
+  const aoa = [["STT","Từ","Loại từ","Phiên âm","Nghĩa"],
+    ...SEED.slice(0, 10).map((r, i) => [i + 1, r[0], r[1], r[2], r[3]])];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), "Vocabulary");
+  XLSX.writeFile(wb, "mau-tu-vung.xlsx");
+};
+
+/* ================================================================ boot == */
+if (!store.live) {
+  const w = document.createElement("div");
+  w.className = "warn";
+  w.textContent = "Trình duyệt đang chặn bộ nhớ cục bộ, nên tiến độ sẽ mất khi tải lại trang. Deploy lên GitHub Pages là chạy đủ.";
+  $("main").prepend(w);
+}
+paintCount();
+paintHome();
+
+/* Announce duplicates on load rather than merging silently - the bank is the
+   user's data, so the destructive step stays behind an explicit button. */
+(function announceDupes() {
+  const scan = scanBank();
+  if (!scan.dupes.length) return;
+  const tab = $$(".tab").find(x => x.dataset.go === "bank");
+  if (tab && !tab.querySelector(".badge"))
+    tab.innerHTML += ` <span class="badge">${scan.dupes.length}</span>`;
+  setTimeout(() => toast(`Kho từ có ${scan.dupes.length} từ bị trùng — mở Kho từ để gộp`), 900);
+})();
+</script>
+</body>
+</html>
